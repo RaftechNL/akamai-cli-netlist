@@ -1,0 +1,13 @@
+{
+  "requirements": {
+    "python": "2.*"
+  },
+  "commands": [
+    {
+      "name": "networklist",
+      "version": "0.0.1",
+      "description": "Manage configurations for Akamai properties",
+      "bin": "https://github.com/akamai/cli-property/releases/download/{{.Version}}/akamai-{{.Name}}-{{.Version}}-{{.OS}}-{{.Arch}}{{.BinSuffix}}"
+    }
+  ]
+}
