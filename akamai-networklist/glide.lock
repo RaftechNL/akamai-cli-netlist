@@ -1,0 +1,32 @@
+hash: cfcaf52aa1fa1c30a7c4fdd574cddabc88b69f2a8820602818527a57dfb193d6
+updated: 2018-02-14T16:05:09.254213+01:00
+imports:
+- name: github.com/akamai/AkamaiOPEN-edgegrid-golang
+  version: 80e2f722f869fc79ff6c745168781e0771e13732
+  subpackages:
+  - client-v1
+  - edgegrid
+  - jsonhooks-v1
+- name: github.com/fatih/color
+  version: 507f6050b8568533fb3f5504de8e5205fa62a114
+- name: github.com/go-ini/ini
+  version: 32e4c1e6bc4e7d0d8451aa6b75200d19e37a536a
+- name: github.com/mattn/go-colorable
+  version: 7dc3415be66d7cc68bf0182f35c8d31f8d2ad8a7
+- name: github.com/mattn/go-isatty
+  version: 6ca4dbf54d38eea1a992b3c722a76a5d1c4cb25c
+- name: github.com/mitchellh/go-homedir
+  version: b8bc1bf767474819792c23f32d8286a45736f1c6
+- name: github.com/sirupsen/logrus
+  version: 3ec0642a7fb6488f65b06f9040adc67e3990296a
+- name: github.com/tuvistavie/securerandom
+  version: 15512123a948d62f6361bd84818e11f2ad84059a
+- name: github.com/urfave/cli
+  version: cfb38830724cc34fedffe9a2a29fb54fa9169cd1
+- name: golang.org/x/sys
+  version: 9d4e42a20653790449273b3c85e67d6d8bae6e2e
+  subpackages:
+  - unix
+- name: gopkg.in/mattes/go-expand-tilde.v1
+  version: cb884138e64c9a8bf5c7d6106d74b0fca082df0c
+testImports: []

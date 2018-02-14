@@ -1,0 +1,12 @@
+package: .
+import:
+- package: github.com/akamai/AkamaiOPEN-edgegrid-golang
+  version: ^0.4.1
+  subpackages:
+  - client-v1
+  - edgegrid
+- package: github.com/fatih/color
+  version: ^1.6.0
+- package: github.com/mitchellh/go-homedir
+- package: github.com/urfave/cli
+  version: ^1.20.0
