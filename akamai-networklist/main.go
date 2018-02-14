@@ -1,13 +1,9 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
-	"io/ioutil"
 	"os"
 	"sort"
 
-	client "github.com/akamai/AkamaiOPEN-edgegrid-golang/client-v1"
 	"github.com/akamai/AkamaiOPEN-edgegrid-golang/edgegrid"
 
 	"github.com/mitchellh/go-homedir"
@@ -129,27 +125,28 @@ func main() {
 					Destination: &listType,
 				},
 			},
-			Action: func(c *cli.Context) error {
+			Action: cmdlistNetLists,
+			// Action: func(c *cli.Context) error {
 
-				m := fmt.Sprintf("%s?listType=IP&extended=%t&includeDeprecated=%t&includeElements=%t", URL, extended, includeDeprecated, includeElements)
+			// 	m := fmt.Sprintf("%s?listType=IP&extended=%t&includeDeprecated=%t&includeElements=%t", URL, extended, includeDeprecated, includeElements)
 
-				fmt.Println(m)
-				req, _ := client.NewRequest(edgeConfig, "GET", m, nil)
-				resp, _ := client.Do(edgeConfig, req)
+			// 	fmt.Println(m)
+			// 	req, _ := client.NewRequest(edgeConfig, "GET", m, nil)
+			// 	resp, _ := client.Do(edgeConfig, req)
 
-				defer resp.Body.Close()
-				byt, _ := ioutil.ReadAll(resp.Body)
+			// 	defer resp.Body.Close()
+			// 	byt, _ := ioutil.ReadAll(resp.Body)
 
-				result, err := ParseAkamaiNetworkLists(string(byt))
-				if err != nil {
-					fmt.Println("error:", err)
-				}
+			// 	result, err := ParseAkamaiNetworkLists(string(byt))
+			// 	if err != nil {
+			// 		fmt.Println("error:", err)
+			// 	}
 
-				jsonRes, _ := json.MarshalIndent(result.NetworkLists, "", "  ")
-				fmt.Printf("%+v\n", string(jsonRes))
+			// 	jsonRes, _ := json.MarshalIndent(result.NetworkLists, "", "  ")
+			// 	fmt.Printf("%+v\n", string(jsonRes))
 
-				return nil
-			},
+			// 	return nil
+			// },
 		},
 	}
 

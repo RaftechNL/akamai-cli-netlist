@@ -7,7 +7,7 @@ import (
 )
 
 // dataGet which is responsible for getting information from API
-func dataGet(urlPath) (result string) {
+func dataGet(urlPath string) (result string) {
 	req, err := client.NewRequest(edgeConfig, "GET", urlPath, nil)
 	errorCheck(err)
 

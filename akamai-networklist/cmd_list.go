@@ -14,7 +14,7 @@ func cmdlistNetLists(c *cli.Context) error {
 func listNetLists(c *cli.Context) error {
 	apiURI := fmt.Sprintf("%s?listType=IP&extended=%t&includeDeprecated=%t&includeElements=%t", URL, extended, includeDeprecated, includeElements)
 
-	data := dataGet(apiURI, "GET")
+	data := dataGet(apiURI)
 
 	result, err := MapsAPIRespParse(data)
 	errorCheck(err)
