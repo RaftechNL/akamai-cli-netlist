@@ -10,35 +10,11 @@ import (
 	"github.com/urfave/cli"
 )
 
-// AkamaiNetworkLists object format
-type AkamaiNetworkLists struct {
-	NetworkLists []struct {
-		UpdateEpoch                int64    `json:"updateEpoch"`
-		CreateEpoch                int64    `json:"createEpoch"`
-		CreateDate                 int64    `json:"createDate"`
-		UpdatedBy                  string   `json:"updatedBy"`
-		UpdateDate                 int64    `json:"updateDate"`
-		CreatedBy                  string   `json:"createdBy"`
-		ProductionActivationStatus string   `json:"productionActivationStatus"`
-		StagingActivationStatus    string   `json:"stagingActivationStatus"`
-		Name                       string   `json:"name"`
-		Type                       string   `json:"type"`
-		UniqueID                   string   `json:"unique-id"`
-		List                       []string `json:"list"`
-		Links                      []struct {
-			Rel  string `json:"rel"`
-			Href string `json:"href"`
-		} `json:"links"`
-		SyncPoint  int `json:"sync-point"`
-		NumEntries int `json:"numEntries"`
-	} `json:"network_lists"`
-}
-
 var (
 	edgeConfig                                            edgegrid.Config
 	version                                               string
 	configSection, configFile                             string
-	listType                                              string
+	listType, output                                      string
 	colorOn, extended, includeDeprecated, includeElements bool
 )
 
@@ -100,53 +76,61 @@ func main() {
 
 	app.Commands = []cli.Command{
 		{
-			Name:  "list",
-			Usage: "List Network Lists",
+			Name:  "get",
+			Usage: "List network lists objects",
 			Flags: []cli.Flag{
 				cli.BoolFlag{
 					Name:        "extended",
-					Usage:       "Show extended lists",
+					Usage:       "returns more verbose data such as creation date and activation status",
 					Destination: &extended,
 				},
 				cli.BoolFlag{
 					Name:        "includeDeprecated",
-					Usage:       "Show deprecated lists",
+					Usage:       "includes network lists that have been deleted",
 					Destination: &includeDeprecated,
 				},
 				cli.BoolFlag{
 					Name:        "includeElements",
-					Usage:       "Show elements in lists",
+					Usage:       "includes the full list of IP or GEO elements",
 					Destination: &includeElements,
 				},
 				cli.StringFlag{
 					Name:        "listType",
 					Value:       "IP",
-					Usage:       "Type of network list [ IP | GEO ]",
+					Usage:       "filters by the network list type [ IP | GEO ]",
 					Destination: &listType,
 				},
 			},
-			Action: cmdlistNetLists,
-			// Action: func(c *cli.Context) error {
-
-			// 	m := fmt.Sprintf("%s?listType=IP&extended=%t&includeDeprecated=%t&includeElements=%t", URL, extended, includeDeprecated, includeElements)
-
-			// 	fmt.Println(m)
-			// 	req, _ := client.NewRequest(edgeConfig, "GET", m, nil)
-			// 	resp, _ := client.Do(edgeConfig, req)
-
-			// 	defer resp.Body.Close()
-			// 	byt, _ := ioutil.ReadAll(resp.Body)
-
-			// 	result, err := ParseAkamaiNetworkLists(string(byt))
-			// 	if err != nil {
-			// 		fmt.Println("error:", err)
-			// 	}
-
-			// 	jsonRes, _ := json.MarshalIndent(result.NetworkLists, "", "  ")
-			// 	fmt.Printf("%+v\n", string(jsonRes))
-
-			// 	return nil
-			// },
+			Subcommands: []cli.Command{
+				{
+					Name:  "all",
+					Usage: "List network lists",
+					Flags: []cli.Flag{
+						cli.BoolFlag{
+							Name:  "raw",
+							Usage: "Show raw data of SiteShield Maps",
+						},
+					},
+					Action: cmdlistNetLists,
+				},
+				{
+					Name:  "list",
+					Usage: "List network list by `ID`",
+					Flags: []cli.Flag{
+						cli.StringFlag{
+							Name:        "output",
+							Value:       "raw",
+							Usage:       "Output format. Supported ['json==raw' and 'apache']",
+							Destination: &output,
+						},
+						cli.BoolFlag{
+							Name:  "only-addresses",
+							Usage: "Show only Map addresses.",
+						},
+					},
+					Action: cmdlistNetList,
+				},
+			},
 		},
 	}
 

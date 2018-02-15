@@ -1,14 +1,15 @@
 package main
 
 import (
+	"io"
 	"io/ioutil"
 
 	client "github.com/akamai/AkamaiOPEN-edgegrid-golang/client-v1"
 )
 
 // dataGet which is responsible for getting information from API
-func dataGet(urlPath string) (result string) {
-	req, err := client.NewRequest(edgeConfig, "GET", urlPath, nil)
+func dataCall(urlPath string, method string, body io.Reader) (result string) {
+	req, err := client.NewRequest(edgeConfig, method, urlPath, body)
 	errorCheck(err)
 
 	resp, err := client.Do(edgeConfig, req)
