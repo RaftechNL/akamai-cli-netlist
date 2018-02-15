@@ -1,6 +1,9 @@
 # akamai-cli-networklist
 Akamai CLI network lists command plugin
 
+# Squirks
+Network lists in Akamai allow you to have multiple lists with the same names but in backend they will have a different ID.
+
 
 
 >>> import requests

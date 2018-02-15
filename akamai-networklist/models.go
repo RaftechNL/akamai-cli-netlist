@@ -48,9 +48,13 @@ type AkamaiNetworkList struct {
 	NumEntries int      `json:"numEntries"`
 }
 
-// AkamaiNewNetworkList object to create new network list
-type AkamaiNewNetworkList struct {
-	Name string   `json:"name"`
-	Type string   `json:"type"`
-	List []string `json:"list"`
+// SingleAkamaiNetworkList object to create new network list
+type SingleAkamaiNetworkList struct {
+	Name        string   `json:"name,omitempty"`
+	Type        string   `json:"type,omitempty"`
+	AcgID       string   `json:"acgId,omitempty"`
+	ContractID  string   `json:"contractId,omitempty"`
+	GroupID     int64    `json:"groupId,omitempty"`
+	Description string   `json:"description,omitempty"`
+	List        []string `json:"list"`
 }

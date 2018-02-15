@@ -50,3 +50,8 @@ func verifyID(id string) {
 		log.Fatal(errStr)
 	}
 }
+
+func printJSON(str interface{}) {
+	jsonRes, _ := json.MarshalIndent(str, "", "  ")
+	fmt.Printf("%+v\n", string(jsonRes))
+}

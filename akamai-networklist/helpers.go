@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io"
 	"io/ioutil"
 
@@ -15,8 +16,15 @@ func dataCall(urlPath string, method string, body io.Reader) (result string) {
 	resp, err := client.Do(edgeConfig, req)
 	errorCheck(err)
 
+	s := fmt.Sprintf("RESP >>> %s", resp)
+	fmt.Println("----")
+	fmt.Println(s)
+	fmt.Println("----")
+
 	defer resp.Body.Close()
+
 	byt, _ := ioutil.ReadAll(resp.Body)
 
+	fmt.Println(string(byt))
 	return string(byt)
 }

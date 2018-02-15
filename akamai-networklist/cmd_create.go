@@ -1,30 +1,29 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
-	"fmt"
 
 	"github.com/urfave/cli"
 )
 
 func cmdCreateNetList(c *cli.Context) error {
-	return listNetLists(c)
+	return createNetList(c)
 }
 
-func CreateNetList(c *cli.Context) error {
-	apiURI := fmt.Sprintf("%s?listType=IP&extended=%t&includeDeprecated=%t&includeElements=%t", URL, extended, includeDeprecated, includeElements)
+func createNetList(c *cli.Context) error {
+	apiURI := URL
 
-	data := dataCall(apiURI, "POST", nil)
+	newNetworkList := SingleAkamaiNetworkList{Name: listName, Type: listType}
+	newNetworkList.List = []string{}
+	newNetworkList.Description = listDescription
 
-	result, err := NetListAPIRespParse(data)
-	errorCheck(err)
+	jsonStr, _ := json.Marshal(newNetworkList)
+	var jsonObj = []byte(jsonStr)
 
-	if c.Bool("only-ids") {
-		// printIDs(result.NetworkLists)
-	} else {
-		jsonRes, _ := json.MarshalIndent(result, "", "  ")
-		fmt.Printf("%+v\n", string(jsonRes))
-	}
+	JSONByteArr := bytes.NewReader(jsonObj)
+
+	dataCall(apiURI, "POST", JSONByteArr)
 
 	return nil
 }

@@ -14,7 +14,9 @@ var (
 	edgeConfig                                            edgegrid.Config
 	version                                               string
 	configSection, configFile                             string
-	listType, output                                      string
+	listId, listName, listType, listDescription           string
+	listOfItems                                           []string
+	output                                                string
 	colorOn, extended, includeDeprecated, includeElements bool
 )
 
@@ -78,57 +80,126 @@ func main() {
 		{
 			Name:  "get",
 			Usage: "List network lists objects",
-			Flags: []cli.Flag{
-				cli.BoolFlag{
-					Name:        "extended",
-					Usage:       "returns more verbose data such as creation date and activation status",
-					Destination: &extended,
-				},
-				cli.BoolFlag{
-					Name:        "includeDeprecated",
-					Usage:       "includes network lists that have been deleted",
-					Destination: &includeDeprecated,
-				},
-				cli.BoolFlag{
-					Name:        "includeElements",
-					Usage:       "includes the full list of IP or GEO elements",
-					Destination: &includeElements,
-				},
-				cli.StringFlag{
-					Name:        "listType",
-					Value:       "IP",
-					Usage:       "filters by the network list type [ IP | GEO ]",
-					Destination: &listType,
-				},
-			},
 			Subcommands: []cli.Command{
 				{
 					Name:  "all",
 					Usage: "List network lists",
 					Flags: []cli.Flag{
 						cli.BoolFlag{
-							Name:  "raw",
-							Usage: "Show raw data of SiteShield Maps",
+							Name:        "extended",
+							Usage:       "returns more verbose data such as creation date and activation status",
+							Destination: &extended,
+						},
+						cli.BoolFlag{
+							Name:        "includeDeprecated",
+							Usage:       "includes network lists that have been deleted",
+							Destination: &includeDeprecated,
+						},
+						cli.BoolFlag{
+							Name:        "includeElements",
+							Usage:       "includes the full list of IP or GEO elements",
+							Destination: &includeElements,
+						},
+						cli.StringFlag{
+							Name:        "listType",
+							Value:       "IP",
+							Usage:       "filters by the network list type [ IP | GEO ]",
+							Destination: &listType,
 						},
 					},
+					// Flags: []cli.Flag{
+					// 	cli.BoolFlag{
+					// 		Name:  "raw",
+					// 		Usage: "Show raw data of SiteShield Maps",
+					// 	},
+					// },
 					Action: cmdlistNetLists,
 				},
 				{
 					Name:  "list",
 					Usage: "List network list by `ID`",
 					Flags: []cli.Flag{
-						cli.StringFlag{
-							Name:        "output",
-							Value:       "raw",
-							Usage:       "Output format. Supported ['json==raw' and 'apache']",
-							Destination: &output,
+						cli.BoolFlag{
+							Name:        "extended",
+							Usage:       "returns more verbose data such as creation date and activation status",
+							Destination: &extended,
 						},
 						cli.BoolFlag{
-							Name:  "only-addresses",
-							Usage: "Show only Map addresses.",
+							Name:        "includeDeprecated",
+							Usage:       "includes network lists that have been deleted",
+							Destination: &includeDeprecated,
+						},
+						cli.BoolFlag{
+							Name:        "includeElements",
+							Usage:       "includes the full list of IP or GEO elements",
+							Destination: &includeElements,
+						},
+						cli.StringFlag{
+							Name:        "listType",
+							Value:       "IP",
+							Usage:       "filters by the network list type [ IP | GEO ]",
+							Destination: &listType,
 						},
 					},
+					// Flags: []cli.Flag{
+					// 	cli.StringFlag{
+					// 		Name:        "output",
+					// 		Value:       "raw",
+					// 		Usage:       "Output format. Supported ['json==raw' and 'apache']",
+					// 		Destination: &output,
+					// 	},
+					// 	cli.BoolFlag{
+					// 		Name:  "only-addresses",
+					// 		Usage: "Show only Map addresses.",
+					// 	},
+					// },
 					Action: cmdlistNetList,
+				},
+			},
+		},
+		{
+			Name:  "create",
+			Usage: "Creates network list",
+			Subcommands: []cli.Command{
+				{
+					Name:  "list",
+					Usage: "creates new network list",
+					Flags: []cli.Flag{
+						cli.StringFlag{
+							Name:        "name",
+							Usage:       "name for the new list",
+							Destination: &listName,
+						},
+						cli.StringFlag{
+							Name:        "description",
+							Value:       "created via akamai-cli-networklist",
+							Usage:       "description for the new list",
+							Destination: &listDescription,
+						},
+						cli.StringFlag{
+							Name:        "type",
+							Value:       "IP",
+							Usage:       "defines type of list for creation (IP/GEO)",
+							Destination: &listType,
+						},
+					},
+					Action: cmdCreateNetList,
+				},
+				{
+					Name:  "item",
+					Usage: "creates new network list item in list with specific`ID`",
+					Flags: []cli.Flag{
+						cli.StringFlag{
+							Name:        "id",
+							Usage:       "list unique-id to add item to",
+							Destination: &listId,
+						},
+						cli.StringSliceFlag{
+							Name:  "items",
+							Usage: "items to be included",
+						},
+					},
+					Action: cmdAdd2netlist,
 				},
 			},
 		},
