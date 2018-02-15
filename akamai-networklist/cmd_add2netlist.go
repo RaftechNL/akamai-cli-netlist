@@ -14,7 +14,7 @@ func cmdAdd2netlist(c *cli.Context) error {
 }
 
 func add2netlist(c *cli.Context) error {
-	apiURI := fmt.Sprintf("%s/%s", URL, listId)
+	apiURI := fmt.Sprintf("%s/%s", URL, listID)
 
 	newNetworkList := SingleAkamaiNetworkList{}
 	sliceOfItems := strings.Split(c.StringSlice("items")[0], ",")

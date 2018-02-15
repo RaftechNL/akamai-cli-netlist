@@ -11,13 +11,14 @@ import (
 )
 
 var (
-	edgeConfig                                            edgegrid.Config
-	version                                               string
-	configSection, configFile                             string
-	listId, listName, listType, listDescription           string
-	listOfItems                                           []string
-	output                                                string
-	colorOn, extended, includeDeprecated, includeElements bool
+	edgeConfig                                                        edgegrid.Config
+	version                                                           string
+	configSection, configFile                                         string
+	listID, listName, listType, listDescription                       string
+	actSiebelTicketID, actPrd, actNotificationRecipients, actComments string
+	listOfItems                                                       []string
+	output                                                            string
+	colorOn, extended, includeDeprecated, includeElements             bool
 )
 
 const (
@@ -119,6 +120,11 @@ func main() {
 					Name:  "list",
 					Usage: "List network list by `ID`",
 					Flags: []cli.Flag{
+						cli.StringFlag{
+							Name:        "id",
+							Usage:       "list unique-id",
+							Destination: &listID,
+						},
 						cli.BoolFlag{
 							Name:        "extended",
 							Usage:       "returns more verbose data such as creation date and activation status",
@@ -192,7 +198,7 @@ func main() {
 						cli.StringFlag{
 							Name:        "id",
 							Usage:       "list unique-id to add item to",
-							Destination: &listId,
+							Destination: &listID,
 						},
 						cli.StringSliceFlag{
 							Name:  "items",
@@ -200,6 +206,44 @@ func main() {
 						},
 					},
 					Action: cmdAdd2netlist,
+				},
+			},
+		},
+		{
+			Name:  "activate",
+			Usage: "Manage network list activation",
+			Subcommands: []cli.Command{
+				{
+					Name:  "list",
+					Usage: "activates network list",
+					Flags: []cli.Flag{
+						cli.StringFlag{
+							Name:        "id",
+							Usage:       "list unique-id",
+							Destination: &listID,
+						},
+						cli.StringFlag{
+							Name:        "ticket-id",
+							Value:       "na",
+							Usage:       "ticket for this activation",
+							Destination: &actSiebelTicketID,
+						},
+						cli.StringFlag{
+							Name:        "comments",
+							Value:       "created via akamai-cli-networklist",
+							Usage:       "ticket for this activation",
+							Destination: &actComments,
+						},
+						cli.StringSliceFlag{
+							Name:  "NotificationRecipients",
+							Usage: "actNotificationRecipients to be included in activation email",
+						},
+						cli.BoolFlag{
+							Name:  "prd",
+							Usage: "activate on production",
+						},
+					},
+					Action: cmdActivateNetList,
 				},
 			},
 		},

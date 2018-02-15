@@ -58,3 +58,9 @@ type SingleAkamaiNetworkList struct {
 	Description string   `json:"description,omitempty"`
 	List        []string `json:"list"`
 }
+
+type ActivationNetworkList struct {
+	SiebelTicketID         string   `json:"siebel-ticket-id"`
+	NotificationRecipients []string `json:"notification-recipients"`
+	Comments               string   `json:"comments"`
+}

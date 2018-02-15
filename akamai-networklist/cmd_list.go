@@ -34,9 +34,9 @@ func listNetLists(c *cli.Context) error {
 }
 
 func listNetList(c *cli.Context) error {
-	id := setID(c)
+	// id := setID(c)
 
-	apiURI := fmt.Sprintf("%s/%s?listType=IP&extended=%t&includeDeprecated=%t&includeElements=%t", URL, id, extended, includeDeprecated, includeElements)
+	apiURI := fmt.Sprintf("%s/%s?listType=IP&extended=%t&includeDeprecated=%t&includeElements=%t", URL, listID, extended, includeDeprecated, includeElements)
 
 	data := dataCall(apiURI, "GET", nil)
 	fmt.Println(data)
