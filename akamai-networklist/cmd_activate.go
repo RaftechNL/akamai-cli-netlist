@@ -19,7 +19,7 @@ func activateNetList(c *cli.Context) error {
 		activationEnvironment = "production"
 	}
 
-	newNetworkListActivation := ActivationNetworkList{SiebelTicketID: actSiebelTicketID, Comments: actComments}
+	newNetworkListActivation := ActNetworkList{SiebelTicketID: actSiebelTicketID, Comments: actComments}
 	newNetworkListActivation.NotificationRecipients = []string{}
 
 	apiURI := fmt.Sprintf("%s/%s/activate?env=%s", URL, listID, activationEnvironment)

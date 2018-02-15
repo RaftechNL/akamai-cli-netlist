@@ -59,8 +59,19 @@ type SingleAkamaiNetworkList struct {
 	List        []string `json:"list"`
 }
 
-type ActivationNetworkList struct {
+// ActNetworkList object
+type ActNetworkList struct {
 	SiebelTicketID         string   `json:"siebel-ticket-id"`
 	NotificationRecipients []string `json:"notification-recipients"`
 	Comments               string   `json:"comments"`
+}
+
+// ActNetworkListStatus object response
+type ActNetworkListStatus struct {
+	Status             int           `json:"status"`
+	UniqueID           string        `json:"unique-id"`
+	Links              []interface{} `json:"links"`
+	SyncPoint          int           `json:"sync-point"`
+	ActivationStatus   string        `json:"activation-status"`
+	ActivationComments string        `json:"activation-comments"`
 }

@@ -3,9 +3,12 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io"
+	"io/ioutil"
 	"log"
 	"strconv"
 
+	client "github.com/akamai/AkamaiOPEN-edgegrid-golang/client-v1"
 	"github.com/fatih/color"
 	"github.com/urfave/cli"
 )
@@ -16,6 +19,35 @@ func errorCheck(e error) {
 		log.Fatal(e)
 		color.Unset()
 	}
+}
+
+// dataGet which is responsible for getting information from API
+func dataCall(urlPath string, method string, body io.Reader) (result string) {
+	req, err := client.NewRequest(edgeConfig, method, urlPath, body)
+	errorCheck(err)
+
+	resp, err := client.Do(edgeConfig, req)
+	errorCheck(err)
+
+	s := fmt.Sprintf("RESP >>> %s", resp)
+	fmt.Println("----")
+	fmt.Println(s)
+	fmt.Println("----")
+
+	defer resp.Body.Close()
+
+	byt, _ := ioutil.ReadAll(resp.Body)
+
+	fmt.Println(string(byt))
+	return string(byt)
+}
+
+// ActNetListStatusAPIRespParse parse status of activation
+func ActNetListStatusAPIRespParse(in string) (maps ActNetworkListStatus, err error) {
+	if err = json.Unmarshal([]byte(in), &maps); err != nil {
+		return
+	}
+	return maps, err
 }
 
 // NetListsAPIRespParse

@@ -245,6 +245,22 @@ func main() {
 					},
 					Action: cmdActivateNetList,
 				},
+				{
+					Name:  "status",
+					Usage: "status of network list activation",
+					Flags: []cli.Flag{
+						cli.StringFlag{
+							Name:        "id",
+							Usage:       "list unique-id",
+							Destination: &listID,
+						},
+						cli.BoolFlag{
+							Name:  "prd",
+							Usage: "activate on production",
+						},
+					},
+					Action: cmdActivateNetListStatus,
+				},
 			},
 		},
 	}
