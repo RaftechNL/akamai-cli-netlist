@@ -34,12 +34,11 @@ func listNetLists(c *cli.Context) error {
 }
 
 func listNetList(c *cli.Context) error {
-	// id := setID(c)
+	verifyArgumentByName(c, "id")
 
 	apiURI := fmt.Sprintf("%s/%s?listType=IP&extended=%t&includeDeprecated=%t&includeElements=%t", URL, listID, extended, includeDeprecated, includeElements)
 
 	data := dataCall(apiURI, "GET", nil)
-	fmt.Println(data)
 
 	result, err := NetListAPIRespParse(data)
 	errorCheck(err)

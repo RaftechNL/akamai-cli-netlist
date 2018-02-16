@@ -12,6 +12,8 @@ func cmdCreateNetList(c *cli.Context) error {
 }
 
 func createNetList(c *cli.Context) error {
+	verifyArgumentByName(c, "id")
+
 	apiURI := URL
 
 	newNetworkList := SingleAkamaiNetworkList{Name: listName, Type: listType}

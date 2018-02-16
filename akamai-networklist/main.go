@@ -14,7 +14,7 @@ var (
 	edgeConfig                                                        edgegrid.Config
 	version                                                           string
 	configSection, configFile                                         string
-	listID, listName, listType, listDescription                       string
+	listID, listName, listType, listDescription, listItem             string
 	actSiebelTicketID, actPrd, actNotificationRecipients, actComments string
 	listOfItems                                                       []string
 	output                                                            string
@@ -173,6 +173,7 @@ func main() {
 					Flags: []cli.Flag{
 						cli.StringFlag{
 							Name:        "name",
+							Value:       "",
 							Usage:       "name for the new list",
 							Destination: &listName,
 						},
@@ -260,6 +261,41 @@ func main() {
 						},
 					},
 					Action: cmdActivateNetListStatus,
+				},
+			},
+		},
+		{
+			Name:  "remove",
+			Usage: "removes network list/items",
+			Subcommands: []cli.Command{
+				{
+					Name:  "item",
+					Usage: "removes item from network list items in list with specific`ID`",
+					Flags: []cli.Flag{
+						cli.StringFlag{
+							Name:        "id",
+							Usage:       "list unique-id to remove item from",
+							Destination: &listID,
+						},
+						cli.StringFlag{
+							Name:        "item",
+							Usage:       "item to be removed from the list",
+							Destination: &listItem,
+						},
+					},
+					Action: cmdRemoveFromnetlist,
+				},
+				{
+					Name:  "list",
+					Usage: "removes network list with specific`ID`",
+					Flags: []cli.Flag{
+						cli.StringFlag{
+							Name:        "id",
+							Usage:       "list unique-id to remove item from",
+							Destination: &listID,
+						},
+					},
+					Action: cmdRemoveNetlist,
 				},
 			},
 		},

@@ -13,6 +13,8 @@ func cmdActivateNetList(c *cli.Context) error {
 }
 
 func activateNetList(c *cli.Context) error {
+	verifyArgumentByName(c, "id")
+
 	activationEnvironment := "staging"
 
 	if c.Bool("prd") {
@@ -26,19 +28,9 @@ func activateNetList(c *cli.Context) error {
 
 	jsonStr, _ := json.Marshal(newNetworkListActivation)
 	var jsonObj = []byte(jsonStr)
-	s := fmt.Sprintf("%s", jsonStr)
-	fmt.Println("----")
-	fmt.Println(s)
-	fmt.Println("----")
 
 	JSONByteArr := bytes.NewReader(jsonObj)
-
-	fmt.Println("apiURI ----->")
-	fmt.Println(apiURI)
-
-	data := dataCall(apiURI, "POST", JSONByteArr)
-	fmt.Println("data ----->")
-	fmt.Println(data)
+	dataCall(apiURI, "POST", JSONByteArr)
 
 	return nil
 }

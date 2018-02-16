@@ -12,6 +12,8 @@ func cmdActivateNetListStatus(c *cli.Context) error {
 }
 
 func activateNetListStatus(c *cli.Context) error {
+	verifyArgumentByName(c, "id")
+
 	activationEnvironment := "staging"
 
 	if c.Bool("prd") {

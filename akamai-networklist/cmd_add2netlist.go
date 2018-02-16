@@ -14,6 +14,8 @@ func cmdAdd2netlist(c *cli.Context) error {
 }
 
 func add2netlist(c *cli.Context) error {
+	verifyArgumentByName(c, "id")
+
 	apiURI := fmt.Sprintf("%s/%s", URL, listID)
 
 	newNetworkList := SingleAkamaiNetworkList{}
@@ -26,14 +28,6 @@ func add2netlist(c *cli.Context) error {
 	}
 
 	jsonStr, _ := json.Marshal(newNetworkList)
-
-	// s := fmt.Sprintf("%s", jsonStr)
-	// fmt.Println("----")
-	// fmt.Println(s)
-	// fmt.Println("----")
-	// // s = fmt.Sprintf("%s", c.StringSlice("items"))
-	// // fmt.Println(s)
-	// // fmt.Println("----")
 
 	var jsonObj = []byte(jsonStr)
 

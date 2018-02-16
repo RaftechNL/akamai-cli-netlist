@@ -6,7 +6,6 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
-	"strconv"
 
 	client "github.com/akamai/AkamaiOPEN-edgegrid-golang/client-v1"
 	"github.com/fatih/color"
@@ -29,16 +28,10 @@ func dataCall(urlPath string, method string, body io.Reader) (result string) {
 	resp, err := client.Do(edgeConfig, req)
 	errorCheck(err)
 
-	s := fmt.Sprintf("RESP >>> %s", resp)
-	fmt.Println("----")
-	fmt.Println(s)
-	fmt.Println("----")
-
 	defer resp.Body.Close()
 
 	byt, _ := ioutil.ReadAll(resp.Body)
 
-	fmt.Println(string(byt))
 	return string(byt)
 }
 
@@ -66,20 +59,20 @@ func NetListAPIRespParse(in string) (maps AkamaiNetworkList, err error) {
 	return maps, err
 }
 
-func setID(c *cli.Context) string {
+// getArgument gets argument from our CLI
+func getArgument(c *cli.Context) string {
 	var id string
 	if c.NArg() == 0 {
-		log.Fatal("Please provide ID for map")
+		log.Fatal("Please provide required argument")
 	}
 
 	id = c.Args().Get(0)
 	return id
 }
 
-func verifyID(id string) {
-	if _, err := strconv.Atoi(id); err != nil {
-		errStr := fmt.Sprintf("SiteShield Map ID should be number, you provided: %q\n", id)
-		log.Fatal(errStr)
+func verifyArgumentByName(c *cli.Context, argName string) {
+	if c.String(argName) == "" {
+		log.Fatal("Please provide required argument(s)!")
 	}
 }
 
