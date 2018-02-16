@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/urfave/cli"
@@ -23,11 +22,13 @@ func listNetLists(c *cli.Context) error {
 	result, err := NetListsAPIRespParse(data)
 	errorCheck(err)
 
+	printTableNetworkList(result)
+
 	if c.Bool("only-ids") {
 		// printIDs(result.NetworkLists)
 	} else {
-		jsonRes, _ := json.MarshalIndent(result.NetworkLists, "", "  ")
-		fmt.Printf("%+v\n", string(jsonRes))
+		// jsonRes, _ := json.MarshalIndent(result.NetworkLists, "", "  ")
+		// fmt.Printf("%+v\n", string(jsonRes))
 	}
 
 	return nil
@@ -43,11 +44,13 @@ func listNetList(c *cli.Context) error {
 	result, err := NetListAPIRespParse(data)
 	errorCheck(err)
 
+	printTableSingleNetworkList(result)
+
 	if c.Bool("only-ids") {
 		// printIDs(result.NetworkLists)
 	} else {
-		jsonRes, _ := json.MarshalIndent(result, "", "  ")
-		fmt.Printf("%+v\n", string(jsonRes))
+		// jsonRes, _ := json.MarshalIndent(result, "", "  ")
+		// fmt.Printf("%+v\n", string(jsonRes))
 	}
 
 	return nil

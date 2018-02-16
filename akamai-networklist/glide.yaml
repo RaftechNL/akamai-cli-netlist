@@ -10,3 +10,4 @@ import:
 - package: github.com/mitchellh/go-homedir
 - package: github.com/urfave/cli
   version: ^1.20.0
+- package: github.com/olekukonko/tablewriter

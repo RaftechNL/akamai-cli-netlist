@@ -1,5 +1,5 @@
-hash: cfcaf52aa1fa1c30a7c4fdd574cddabc88b69f2a8820602818527a57dfb193d6
-updated: 2018-02-14T16:05:09.254213+01:00
+hash: 64bcb42b618f59d082801e135536eaa5df7360f789c0182b011fe11eeebd2964
+updated: 2018-02-16T15:42:18.45109+01:00
 imports:
 - name: github.com/akamai/AkamaiOPEN-edgegrid-golang
   version: 80e2f722f869fc79ff6c745168781e0771e13732
@@ -17,6 +17,8 @@ imports:
   version: 6ca4dbf54d38eea1a992b3c722a76a5d1c4cb25c
 - name: github.com/mitchellh/go-homedir
   version: b8bc1bf767474819792c23f32d8286a45736f1c6
+- name: github.com/olekukonko/tablewriter
+  version: b8a9be070da40449e501c3c4730a889e42d87a9e
 - name: github.com/sirupsen/logrus
   version: 3ec0642a7fb6488f65b06f9040adc67e3990296a
 - name: github.com/tuvistavie/securerandom
