@@ -75,3 +75,11 @@ type ActNetworkListStatus struct {
 	ActivationStatus   string        `json:"activation-status"`
 	ActivationComments string        `json:"activation-comments"`
 }
+
+// ResponseMessage is given back by Akamai if we did not have fatal
+// 				   http client error
+type ResponseMessage struct {
+	Message string        `json:"message"`
+	Status  int           `json:"status"`
+	Links   []interface{} `json:"links"`
+}

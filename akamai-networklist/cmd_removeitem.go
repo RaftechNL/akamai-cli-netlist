@@ -15,7 +15,16 @@ func removeFromnetlist(c *cli.Context) error {
 
 	apiURI := fmt.Sprintf("%s/%s/element?element=%s", URL, listID, listItem)
 
-	dataCall(apiURI, "DELETE", nil)
+	data := dataCall(apiURI, "DELETE", nil)
+
+	if output == "json" {
+		fmt.Println(data)
+	} else {
+		msg, err := NetMsgAPIRespParse(data)
+		errorCheck(err)
+
+		fmt.Println(msg.Message)
+	}
 
 	return nil
 }

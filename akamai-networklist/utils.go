@@ -61,6 +61,14 @@ func NetListAPIRespParse(in string) (maps AkamaiNetworkList, err error) {
 	return maps, err
 }
 
+// NetMsgAPIRespParse parses into object our response message
+func NetMsgAPIRespParse(in string) (respMsg ResponseMessage, err error) {
+	if err = json.Unmarshal([]byte(in), &respMsg); err != nil {
+		return
+	}
+	return respMsg, err
+}
+
 // getArgument gets argument from our CLI
 func getArgument(c *cli.Context) string {
 	var id string
@@ -85,17 +93,46 @@ func printJSON(str interface{}) {
 
 func printTableNetworkList(netLists AkamaiNetworkLists) {
 	w := tabwriter.NewWriter(os.Stdout, 0, 0, padding, ' ', 0)
-	fmt.Fprintln(w, fmt.Sprint("# ID\tName\tNumOfentries\tStaging\tProduction"))
-	for _, singleList := range netLists.NetworkLists {
-		fmt.Fprintln(w, fmt.Sprintf("%s\t%s\t%v\t%s\t%s", singleList.UniqueID, singleList.Name, singleList.NumEntries, singleList.StagingActivationStatus, singleList.ProductionActivationStatus))
+	if extended {
+		fmt.Fprintln(w, fmt.Sprint("# ID\tName\tNumOfentries\tStaging\tProduction"))
+		for _, singleList := range netLists.NetworkLists {
+			fmt.Fprintln(w, fmt.Sprintf("%s\t%s\t%v\t%s\t%s", singleList.UniqueID, singleList.Name, singleList.NumEntries, singleList.StagingActivationStatus, singleList.ProductionActivationStatus))
+		}
+	} else {
+		fmt.Fprintln(w, fmt.Sprint("# ID\tName\tNumOfentries"))
+		for _, singleList := range netLists.NetworkLists {
+			fmt.Fprintln(w, fmt.Sprintf("%s\t%s\t%v", singleList.UniqueID, singleList.Name, singleList.NumEntries))
+		}
 	}
+
 	w.Flush()
 }
 
 func printTableSingleNetworkList(singleList AkamaiNetworkList) {
 	w := tabwriter.NewWriter(os.Stdout, 0, 0, padding, ' ', 0)
-	fmt.Fprintln(w, fmt.Sprint("# ID\tName\tNumOfentries\tStaging\tProduction"))
-	darwinString := "%-10s  %-15s  %-15s  %-18s  %-5s  %-17s  %s\n"
-	fmt.Fprintln(w, fmt.Sprintf(darwinString, singleList.UniqueID, singleList.Name, singleList.NumEntries, singleList.StagingActivationStatus, singleList.ProductionActivationStatus))
+
+	if extended {
+		fmt.Fprintln(w, fmt.Sprint("# ID\tName\tNumOfentries\tStaging\tProduction"))
+		fmt.Fprintln(w, fmt.Sprintf("%s\t%s\t%v\t%s\t%s", singleList.UniqueID, singleList.Name, singleList.NumEntries, singleList.StagingActivationStatus, singleList.ProductionActivationStatus))
+	} else {
+		fmt.Fprintln(w, fmt.Sprint("# ID\tName\tNumOfentries"))
+		fmt.Fprintln(w, fmt.Sprintf("%s\t%s\t%v", singleList.UniqueID, singleList.Name, singleList.NumEntries))
+	}
+	w.Flush()
+}
+
+func printTableActivationStatus(singleList ActNetworkListStatus, activationEnvironment string) {
+	w := tabwriter.NewWriter(os.Stdout, 0, 0, padding, ' ', 0)
+	fmt.Fprintln(w, fmt.Sprint("# ID\tStatus\tActivationEnvironment\tActivationStatus\tActivationComments"))
+
+	targetColor := color.FgYellow
+
+	if singleList.ActivationStatus == "ACTIVE" {
+		targetColor = color.FgGreen
+	}
+
+	activationColor := color.New(targetColor).SprintFunc()
+
+	fmt.Fprintln(w, fmt.Sprintf("%s\t%v\t%s\t%s\t%s", singleList.UniqueID, singleList.Status, activationEnvironment, activationColor(singleList.ActivationStatus), singleList.ActivationComments))
 	w.Flush()
 }

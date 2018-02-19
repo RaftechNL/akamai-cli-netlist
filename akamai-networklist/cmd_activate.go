@@ -30,7 +30,17 @@ func activateNetList(c *cli.Context) error {
 	var jsonObj = []byte(jsonStr)
 
 	JSONByteArr := bytes.NewReader(jsonObj)
-	dataCall(apiURI, "POST", JSONByteArr)
+
+	data := dataCall(apiURI, "POST", JSONByteArr)
+
+	if output == "json" {
+		fmt.Println(data)
+	} else {
+		_, err := NetMsgAPIRespParse(data)
+		errorCheck(err)
+
+		fmt.Println("ok")
+	}
 
 	return nil
 }

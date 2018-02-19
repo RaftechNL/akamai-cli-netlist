@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/urfave/cli"
@@ -24,14 +23,13 @@ func activateNetListStatus(c *cli.Context) error {
 
 	data := dataCall(apiURI, "GET", nil)
 
-	result, err := ActNetListStatusAPIRespParse(data)
-	errorCheck(err)
-
-	if c.Bool("only-ids") {
-		// printIDs(result.NetworkLists)
+	if output == "json" {
+		fmt.Println(data)
 	} else {
-		jsonRes, _ := json.MarshalIndent(result, "", "  ")
-		fmt.Printf("%+v\n", string(jsonRes))
+		result, err := ActNetListStatusAPIRespParse(data)
+		errorCheck(err)
+
+		printTableActivationStatus(result, activationEnvironment)
 	}
 
 	return nil

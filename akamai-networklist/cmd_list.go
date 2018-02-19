@@ -15,20 +15,17 @@ func cmdlistNetList(c *cli.Context) error {
 }
 
 func listNetLists(c *cli.Context) error {
-	apiURI := fmt.Sprintf("%s?listType=IP&extended=%t&includeDeprecated=%t&includeElements=%t", URL, extended, includeDeprecated, includeElements)
+	apiURI := fmt.Sprintf("%s?listType=%s&extended=%t&includeDeprecated=%t&includeElements=%t", URL, listType, extended, includeDeprecated, includeElements)
 
 	data := dataCall(apiURI, "GET", nil)
 
-	result, err := NetListsAPIRespParse(data)
-	errorCheck(err)
-
-	printTableNetworkList(result)
-
-	if c.Bool("only-ids") {
-		// printIDs(result.NetworkLists)
+	if output == "json" {
+		fmt.Println(data)
 	} else {
-		// jsonRes, _ := json.MarshalIndent(result.NetworkLists, "", "  ")
-		// fmt.Printf("%+v\n", string(jsonRes))
+		result, err := NetListsAPIRespParse(data)
+		errorCheck(err)
+
+		printTableNetworkList(result)
 	}
 
 	return nil
@@ -37,20 +34,17 @@ func listNetLists(c *cli.Context) error {
 func listNetList(c *cli.Context) error {
 	verifyArgumentByName(c, "id")
 
-	apiURI := fmt.Sprintf("%s/%s?listType=IP&extended=%t&includeDeprecated=%t&includeElements=%t", URL, listID, extended, includeDeprecated, includeElements)
+	apiURI := fmt.Sprintf("%s/%s?listType=%s&extended=%t&includeDeprecated=%t&includeElements=%t", URL, listID, listType, extended, includeDeprecated, includeElements)
 
 	data := dataCall(apiURI, "GET", nil)
 
-	result, err := NetListAPIRespParse(data)
-	errorCheck(err)
-
-	printTableSingleNetworkList(result)
-
-	if c.Bool("only-ids") {
-		// printIDs(result.NetworkLists)
+	if output == "json" {
+		fmt.Println(data)
 	} else {
-		// jsonRes, _ := json.MarshalIndent(result, "", "  ")
-		// fmt.Printf("%+v\n", string(jsonRes))
+		result, err := NetListAPIRespParse(data)
+		errorCheck(err)
+
+		printTableSingleNetworkList(result)
 	}
 
 	return nil

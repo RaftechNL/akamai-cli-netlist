@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 
 	"github.com/urfave/cli"
 )
@@ -25,7 +26,16 @@ func createNetList(c *cli.Context) error {
 
 	JSONByteArr := bytes.NewReader(jsonObj)
 
-	dataCall(apiURI, "POST", JSONByteArr)
+	data := dataCall(apiURI, "POST", JSONByteArr)
+
+	if output == "json" {
+		fmt.Println(data)
+	} else {
+		msg, err := NetMsgAPIRespParse(data)
+		errorCheck(err)
+
+		fmt.Println(msg.Message)
+	}
 
 	return nil
 }

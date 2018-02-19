@@ -70,6 +70,12 @@ func main() {
 			Destination: &configFile,
 			EnvVar:      "AKAMAI_EDGERC_CONFIGFILE",
 		},
+		cli.StringFlag{
+			Name:        "output",
+			Value:       "table",
+			Usage:       "Prints json output (raw) or table",
+			Destination: &output,
+		},
 		cli.BoolFlag{
 			Name:        "no-color",
 			Usage:       "Disable color output",
@@ -108,12 +114,6 @@ func main() {
 							Destination: &listType,
 						},
 					},
-					// Flags: []cli.Flag{
-					// 	cli.BoolFlag{
-					// 		Name:  "raw",
-					// 		Usage: "Show raw data of SiteShield Maps",
-					// 	},
-					// },
 					Action: cmdlistNetLists,
 				},
 				{
@@ -147,21 +147,37 @@ func main() {
 							Destination: &listType,
 						},
 					},
-					// Flags: []cli.Flag{
-					// 	cli.StringFlag{
-					// 		Name:        "output",
-					// 		Value:       "raw",
-					// 		Usage:       "Output format. Supported ['json==raw' and 'apache']",
-					// 		Destination: &output,
-					// 	},
-					// 	cli.BoolFlag{
-					// 		Name:  "only-addresses",
-					// 		Usage: "Show only Map addresses.",
-					// 	},
-					// },
 					Action: cmdlistNetList,
 				},
 			},
+		},
+		{
+			Name:  "search",
+			Usage: "search by expression",
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:        "item",
+					Usage:       "item to search for",
+					Destination: &listItem,
+				},
+				cli.BoolFlag{
+					Name:        "extended",
+					Usage:       "returns more verbose data such as creation date and activation status",
+					Destination: &extended,
+				},
+				cli.BoolFlag{
+					Name:        "includeDeprecated",
+					Usage:       "includes network lists that have been deleted",
+					Destination: &includeDeprecated,
+				},
+				cli.StringFlag{
+					Name:        "listType",
+					Value:       "IP",
+					Usage:       "filters by the network list type [ IP | GEO ]",
+					Destination: &listType,
+				},
+			},
+			Action: cmdSearchNetLists,
 		},
 		{
 			Name:  "create",
@@ -305,7 +321,6 @@ func main() {
 	sort.Sort(cli.CommandsByName(app.Commands))
 
 	app.Before = func(c *cli.Context) error {
-
 		edgeConfig = config(configFile, configSection)
 		return nil
 	}

@@ -28,12 +28,19 @@ func add2netlist(c *cli.Context) error {
 	}
 
 	jsonStr, _ := json.Marshal(newNetworkList)
-
 	var jsonObj = []byte(jsonStr)
-
 	JSONByteArr := bytes.NewReader(jsonObj)
 
-	dataCall(apiURI, "POST", JSONByteArr)
+	data := dataCall(apiURI, "POST", JSONByteArr)
+
+	if output == "json" {
+		fmt.Println(data)
+	} else {
+		msg, err := NetMsgAPIRespParse(data)
+		errorCheck(err)
+
+		fmt.Println(msg.Message)
+	}
 
 	return nil
 }
