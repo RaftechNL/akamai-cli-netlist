@@ -1,13 +1,13 @@
 {
   "requirements": {
-    "python": "2.*"
+    "go": "1.9.2"
   },
   "commands": [
     {
-      "name": "networklist",
-      "version": "0.0.1",
-      "description": "Manage configurations for Akamai properties",
-      "bin": "https://github.com/RafPe/akamai-cli-networklist/releases/download/{{.Version}}/akamai-{{.Name}}-{{.Version}}-{{.OS}}-{{.Arch}}{{.BinSuffix}}"
+      "name": "netlist",
+      "version": "0.0.2",
+      "description": "Network Lists management",
+      "bin": "https://github.com/RafPe/akamai-cli-networklist/releases/download/v{{.Version}}/akamai-{{.Name}}_{{.OS}}_{{.Arch}}{{.BinSuffix}}"
     }
   ]
 }
