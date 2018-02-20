@@ -29,9 +29,9 @@ const (
 func main() {
 	_, inCLI := os.LookupEnv("AKAMAI_CLI")
 
-	appName := "akamai-networklist"
+	appName := "akamai-netlist"
 	if inCLI {
-		appName = "akamai networklist"
+		appName = "akamai netlist"
 	}
 
 	app := cli.NewApp()
