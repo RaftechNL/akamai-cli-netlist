@@ -17,7 +17,7 @@ var (
 	listID, listName, listType, listDescription, listItem             string
 	actSiebelTicketID, actPrd, actNotificationRecipients, actComments string
 	listOfItems                                                       []string
-	output                                                            string
+	output, appName                                                   string
 	colorOn, extended, includeDeprecated, includeElements             bool
 )
 
