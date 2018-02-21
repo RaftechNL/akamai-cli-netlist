@@ -47,8 +47,10 @@ Make sure your API client do have approiate scopes enabled to manage network lis
 Available in two different ways.With akamai-cli toolkit or as a standalone version
 
 ### Via akamai-cli ( recommended )
-1.  Execute the following from console
-    `akamai install https://github.com/RafPe/akamai-cli-networklist`
+
+1.  Execute the following from console     
+    `akamai install https://github.com/RafPe/akamai-cli-netlist`
+
 ### Standalone
 To compile it from source, you will need Go 1.9 or later, and the [Glide](https://glide.sh) package manager installed:
 1. Fetch the package:
@@ -92,7 +94,6 @@ GLOBAL OPTIONS:
    --help, -h               show help
    --version, -v            print the version
 ```
-
 ### Get
 This main command allows you to exexute `get` actions on Akamai.
 
