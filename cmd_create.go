@@ -13,7 +13,7 @@ func cmdCreateNetList(c *cli.Context) error {
 }
 
 func createNetList(c *cli.Context) error {
-	verifyArgumentByName(c, "id")
+	verifyArgumentByName(c, "name")
 
 	apiURI := URL
 
@@ -31,10 +31,10 @@ func createNetList(c *cli.Context) error {
 	if output == "json" {
 		fmt.Println(data)
 	} else {
-		msg, err := NetMsgAPIRespParse(data)
+		_, err := NetMsgAPIRespParse(data)
 		errorCheck(err)
 
-		fmt.Println(msg.Message)
+		fmt.Println("ok")
 	}
 
 	return nil

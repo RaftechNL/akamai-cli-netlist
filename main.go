@@ -248,12 +248,12 @@ func main() {
 						cli.StringFlag{
 							Name:        "comments",
 							Value:       "created via akamai-cli-networklist",
-							Usage:       "ticket for this activation",
+							Usage:       "comment for this activation",
 							Destination: &actComments,
 						},
 						cli.StringSliceFlag{
 							Name:  "NotificationRecipients",
-							Usage: "actNotificationRecipients to be included in activation email",
+							Usage: "Notification recipients to be included in activation email",
 						},
 						cli.BoolFlag{
 							Name:  "prd",
