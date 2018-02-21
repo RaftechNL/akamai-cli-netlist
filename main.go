@@ -321,7 +321,7 @@ func main() {
 	sort.Sort(cli.CommandsByName(app.Commands))
 
 	app.Before = func(c *cli.Context) error {
-		edgeConfig, _ = config(configFile, configSection)
+		config(configFile, configSection)
 		return nil
 	}
 
