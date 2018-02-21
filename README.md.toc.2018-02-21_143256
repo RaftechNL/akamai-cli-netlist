@@ -1,0 +1,17 @@
+   * [Akamai CLI for network lists](#akamai-cli-for-network-lists)
+   * [Configuration &amp; Installation](#configuration--installation)
+      * [API Credentials and sections](#api-credentials-and-sections)
+      * [Installation](#installation)
+         * [Via akamai-cli ( recommended )](#via-akamai-cli--recommended-)
+         * [Standalone](#standalone)
+      * [App overview](#app-overview)
+         * [General](#general)
+         * [Get](#get)
+         * [Create](#create)
+         * [Activate](#activate)
+         * [Search](#search)
+         * [Remove](#remove)
+      * [Credits](#credits)
+
+<!-- Added by: rpieniazek, at:  -->
+
