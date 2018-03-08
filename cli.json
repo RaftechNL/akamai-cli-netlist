@@ -5,7 +5,7 @@
   "commands": [
     {
       "name": "netlist",
-      "version": "0.0.4",
+      "version": "0.0.5",
       "description": "Network Lists management",
       "bin": "https://github.com/RafPe/akamai-cli-networklist/releases/download/v{{.Version}}/akamai-{{.Name}}_{{.OS}}_{{.Arch}}{{.BinSuffix}}"
     }
