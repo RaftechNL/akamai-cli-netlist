@@ -11,3 +11,5 @@ import:
 - package: github.com/urfave/cli
   version: ^1.20.0
 - package: github.com/olekukonko/tablewriter
+- package: github.com/RafPe/go-edgegrid
+  version: ~0.0.1
