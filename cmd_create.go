@@ -1,8 +1,6 @@
 package main
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
 
 	"github.com/urfave/cli"
@@ -15,27 +13,13 @@ func cmdCreateNetList(c *cli.Context) error {
 func createNetList(c *cli.Context) error {
 	verifyArgumentByName(c, "name")
 
-	apiURI := URL
+	newList, _, err := apiClient.NetworkLists.CreateNetworkList(newNetworkListOpst)
 
-	newNetworkList := SingleAkamaiNetworkList{Name: listName, Type: listType}
-	newNetworkList.List = []string{}
-	newNetworkList.Description = listDescription
-
-	jsonStr, _ := json.Marshal(newNetworkList)
-	var jsonObj = []byte(jsonStr)
-
-	JSONByteArr := bytes.NewReader(jsonObj)
-
-	data := dataCall(apiURI, "POST", JSONByteArr)
-
-	if output == "json" {
-		fmt.Println(data)
-	} else {
-		_, err := NetMsgAPIRespParse(data)
-		errorCheck(err)
-
-		fmt.Println("ok")
+	if err != nil {
+		return err
 	}
+
+	fmt.Println(newList.UniqueID)
 
 	return nil
 }

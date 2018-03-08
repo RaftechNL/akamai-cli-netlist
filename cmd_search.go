@@ -6,24 +6,29 @@ import (
 	"github.com/urfave/cli"
 )
 
+// cmdSearchNetLists is used by cli to execute search across lists based on item
+//
+// cmd_search
 func cmdSearchNetLists(c *cli.Context) error {
 	return searchNetLists(c)
 }
 
+// searchNetLists execute client API call to search for lists based on item
+//
+// cmd_search
 func searchNetLists(c *cli.Context) error {
 	verifyArgumentByName(c, "item")
 
-	apiURI := fmt.Sprintf("%s/search?expression=%s&listType=%s&extended=%t&includeDeprecated=%t", URL, listItem, listType, extended, includeDeprecated)
+	netLists, resp, err := apiClient.NetworkLists.SearchNetworkListItem(listItem, listNetListOpts)
 
-	data := dataCall(apiURI, "GET", nil)
+	if err != nil {
+		return err
+	}
 
 	if output == "json" {
-		fmt.Println(data)
+		fmt.Println(resp.Body)
 	} else {
-		result, err := NetListsAPIRespParse(data)
-		errorCheck(err)
-
-		printTableNetworkList(result)
+		tablePrintNetworkLists(netLists)
 	}
 
 	return nil

@@ -5,6 +5,8 @@ The Akamai Network List Kit is a set of go libraries that wraps Akamai's {OPEN} 
 
 This tool have been created with idea of using *akamai cli*. It supports most of the methods provided by API of Akamai. Should you miss something we gladly *accept patches* :)
 
+It uses custom [Akamai API client](https://github.com/RafPe/go-edgegrid)
+
 <!--ts-->
    * [Akamai CLI for network lists](#akamai-cli-for-network-lists)
    * [Configuration &amp; Installation](#configuration--installation)
@@ -87,7 +89,7 @@ COMMANDS:
      help, h   Shows a list of commands or help for one command
 
 GLOBAL OPTIONS:
-   --config FILE, -c FILE   Location of the credentials FILE (default: "/Users/username/.edgerc") [$AKAMAI_EDGERC_CONFIGFILE]
+   --config FILE, -c FILE   Location of the credentials FILE (default: "/Users/username/.edgerc") [$AKAMAI_EDGERC_CONFIG]
    --no-color               Disable color output
    --output value           Prints json output (raw) or table (default: "table")
    --section NAME, -s NAME  NAME of section to use from credentials file (default: "default") [$AKAMAI_EDGERC_SECTION]
@@ -126,12 +128,39 @@ This main command allows you to exexute `get` actions on Akamai.
     # ID                    Name                NumOfentries   Staging   Production
     36547_RPIENIAZEKTEST1   rpieniazek_test_1   2              ACTIVE    MODIFIED
     ```
-* Getting items from the list - This action require you to change output type to `JSON` as they can be list with many items and display in table might not be the best way to go ( WIP ) 
+* Getting items from the list
 
     ```shell
-    > $ akamai netlist --output json get list --includeElements --id 36547_RPIENIAZEKTEST1
-    {"name":"rpieniazek_test_1","type":"IP","unique-id":"36547_RPIENIAZEKTEST1","sync-point":9,"list":["2.3.4.5/24","9.9.9.9/32","5.6.7.8/32"],"links":[{"rel":"get 36547_RPIENIAZEKTEST1","href":"/network-list/v1/network_lists/36547_RPIENIAZEKTEST1"}],"numEntries":3}
+    > $ akamai netlist get list --includeElements --id 38492_DUMMYDELETE1
+    # ID                 Name             NumOfentries   Staging   Production
+    38492_DUMMYDELETE1   dummy_delete_1   2
+
+    # Elements
+    1.2.3.4/32        5.6.7.8/32
     ```
+* Passing output to `jq` is also easy and possible 
+
+    ```shell
+    > $ akamai netlist --output json get list --includeElements --id 38492_DUMMYDELETE1 | jq
+    {
+        "name": "dummy_delete_1",
+        "type": "IP",
+        "list": [
+            "1.2.3.4/32",
+            "5.6.7.8/32"
+        ],
+        "links": [
+            {
+                "rel": "get 38492_DUMMYDELETE1",
+                "href": "/network-list/v1/network_lists/38492_DUMMYDELETE1"
+            }
+    ],
+        "unique-id": "38492_DUMMYDELETE1",
+        "sync-point": 0,
+        "numEntries": 2
+    }
+    ```
+
 
 ### Create
 Used for creating new network lists of network list items

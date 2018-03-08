@@ -1,33 +1,40 @@
 package main
 
 import (
+	"log"
 	"os"
 	"sort"
 
-	"github.com/akamai/AkamaiOPEN-edgegrid-golang/edgegrid"
+	"github.com/RafPe/go-edgegrid"
+	homedir "github.com/mitchellh/go-homedir"
 
-	"github.com/mitchellh/go-homedir"
 	"github.com/urfave/cli"
 )
 
 var (
-	edgeConfig                                                        edgegrid.Config
-	version                                                           string
-	configSection, configFile                                         string
-	listID, listName, listType, listDescription, listItem             string
-	actSiebelTicketID, actPrd, actNotificationRecipients, actComments string
-	listOfItems                                                       []string
-	output, appName                                                   string
-	colorOn, extended, includeDeprecated, includeElements             bool
+	apiClient                                   *edgegrid.Client
+	apiClientOpts                               edgegrid.ClientOptions
+	listNetListOpts                             edgegrid.ListNetworkListsOptions
+	actNetworkListOpts                          edgegrid.ActivateNetworkListOptions
+	newNetworkListOpst                          edgegrid.CreateNetworkListOptions
+	version, appName, output, homeDir           string
+	listID, listName, listDescription, listItem string
+	actPrd                                      string
+	listOfItems                                 []string
+	colorOn                                     bool
 )
 
 const (
 	padding = 3
-	URL     = "/network-list/v1/network_lists"
 )
 
 func main() {
 	_, inCLI := os.LookupEnv("AKAMAI_CLI")
+
+	// Sets default value for credentials configuration file
+	// to be pointing to ~/.edgerc
+	homeDir, _ = homedir.Dir()
+	homeDir += string(os.PathSeparator) + ".edgerc"
 
 	appName := "akamai-netlist"
 	if inCLI {
@@ -49,31 +56,26 @@ func main() {
 		},
 	}
 
-	// Sets default value for credentials configuration file
-	// to be pointing to ~/.edgerc
-	dir, _ := homedir.Dir()
-	dir += string(os.PathSeparator) + ".edgerc"
-
 	// no flag => false
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:        "section, s",
 			Value:       "default",
 			Usage:       "`NAME` of section to use from credentials file",
-			Destination: &configSection,
-			EnvVar:      "AKAMAI_EDGERC_SECTION",
+			Destination: &apiClientOpts.ConfigSection,
+			EnvVar:      string(edgegrid.EnvVarEdgercSection),
 		},
 		cli.StringFlag{
 			Name:        "config, c",
-			Value:       dir,
+			Value:       homeDir,
 			Usage:       "Location of the credentials `FILE`",
-			Destination: &configFile,
-			EnvVar:      "AKAMAI_EDGERC_CONFIGFILE",
+			Destination: &apiClientOpts.ConfigPath,
+			EnvVar:      string(edgegrid.EnvVarEdgercPath),
 		},
 		cli.StringFlag{
 			Name:        "output",
 			Value:       "table",
-			Usage:       "Prints json output (raw) or table",
+			Usage:       "Defines output type ( json | table ) ",
 			Destination: &output,
 		},
 		cli.BoolFlag{
@@ -95,23 +97,23 @@ func main() {
 						cli.BoolFlag{
 							Name:        "extended",
 							Usage:       "returns more verbose data such as creation date and activation status",
-							Destination: &extended,
+							Destination: &listNetListOpts.Extended,
 						},
 						cli.BoolFlag{
 							Name:        "includeDeprecated",
 							Usage:       "includes network lists that have been deleted",
-							Destination: &includeDeprecated,
+							Destination: &listNetListOpts.IncludeDeprecated,
 						},
 						cli.BoolFlag{
 							Name:        "includeElements",
 							Usage:       "includes the full list of IP or GEO elements",
-							Destination: &includeElements,
+							Destination: &listNetListOpts.IncludeElements,
 						},
 						cli.StringFlag{
 							Name:        "listType",
 							Value:       "IP",
 							Usage:       "filters by the network list type [ IP | GEO ]",
-							Destination: &listType,
+							Destination: &listNetListOpts.TypeOflist,
 						},
 					},
 					Action: cmdlistNetLists,
@@ -128,23 +130,23 @@ func main() {
 						cli.BoolFlag{
 							Name:        "extended",
 							Usage:       "returns more verbose data such as creation date and activation status",
-							Destination: &extended,
+							Destination: &listNetListOpts.Extended,
 						},
 						cli.BoolFlag{
 							Name:        "includeDeprecated",
 							Usage:       "includes network lists that have been deleted",
-							Destination: &includeDeprecated,
+							Destination: &listNetListOpts.IncludeDeprecated,
 						},
 						cli.BoolFlag{
 							Name:        "includeElements",
 							Usage:       "includes the full list of IP or GEO elements",
-							Destination: &includeElements,
+							Destination: &listNetListOpts.IncludeElements,
 						},
 						cli.StringFlag{
 							Name:        "listType",
 							Value:       "IP",
 							Usage:       "filters by the network list type [ IP | GEO ]",
-							Destination: &listType,
+							Destination: &listNetListOpts.TypeOflist,
 						},
 					},
 					Action: cmdlistNetList,
@@ -163,18 +165,18 @@ func main() {
 				cli.BoolFlag{
 					Name:        "extended",
 					Usage:       "returns more verbose data such as creation date and activation status",
-					Destination: &extended,
+					Destination: &listNetListOpts.Extended,
 				},
 				cli.BoolFlag{
 					Name:        "includeDeprecated",
 					Usage:       "includes network lists that have been deleted",
-					Destination: &includeDeprecated,
+					Destination: &listNetListOpts.IncludeDeprecated,
 				},
 				cli.StringFlag{
 					Name:        "listType",
 					Value:       "IP",
 					Usage:       "filters by the network list type [ IP | GEO ]",
-					Destination: &listType,
+					Destination: &listNetListOpts.TypeOflist,
 				},
 			},
 			Action: cmdSearchNetLists,
@@ -191,19 +193,19 @@ func main() {
 							Name:        "name",
 							Value:       "",
 							Usage:       "name for the new list",
-							Destination: &listName,
+							Destination: &newNetworkListOpst.Name,
 						},
 						cli.StringFlag{
 							Name:        "description",
 							Value:       "created via akamai-cli-networklist",
 							Usage:       "description for the new list",
-							Destination: &listDescription,
+							Destination: &newNetworkListOpst.Description,
 						},
 						cli.StringFlag{
 							Name:        "type",
 							Value:       "IP",
 							Usage:       "defines type of list for creation (IP/GEO)",
-							Destination: &listType,
+							Destination: &newNetworkListOpst.Type,
 						},
 					},
 					Action: cmdCreateNetList,
@@ -243,13 +245,13 @@ func main() {
 							Name:        "ticket-id",
 							Value:       "na",
 							Usage:       "ticket for this activation",
-							Destination: &actSiebelTicketID,
+							Destination: &actNetworkListOpts.SiebelTicketID,
 						},
 						cli.StringFlag{
 							Name:        "comments",
 							Value:       "created via akamai-cli-networklist",
 							Usage:       "comment for this activation",
-							Destination: &actComments,
+							Destination: &actNetworkListOpts.Comments,
 						},
 						cli.StringSliceFlag{
 							Name:  "NotificationRecipients",
@@ -321,9 +323,28 @@ func main() {
 	sort.Sort(cli.CommandsByName(app.Commands))
 
 	app.Before = func(c *cli.Context) error {
-		config(configFile, configSection)
+
+		apiClientOpts := &edgegrid.ClientOptions{}
+		apiClientOpts.ConfigPath = getEnv(string(edgegrid.EnvVarEdgercPath), homeDir)
+		apiClientOpts.ConfigSection = getEnv(string(edgegrid.EnvVarEdgercSection), "default")
+
+		// create new API client
+		apiClient = edgegrid.NewClient(nil, apiClientOpts)
+
 		return nil
 	}
-
 	app.Run(os.Args)
+}
+
+func verifyArgumentByName(c *cli.Context, argName string) {
+	if c.String(argName) == "" {
+		log.Fatal("Please provide required argument(s)!")
+	}
+}
+
+func getEnv(key, fallback string) string {
+	if value, ok := os.LookupEnv(key); ok {
+		return value
+	}
+	return fallback
 }

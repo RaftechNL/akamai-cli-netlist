@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 
+	edgegrid "github.com/RafPe/go-edgegrid"
 	"github.com/urfave/cli"
 )
 
@@ -13,23 +14,22 @@ func cmdActivateNetListStatus(c *cli.Context) error {
 func activateNetListStatus(c *cli.Context) error {
 	verifyArgumentByName(c, "id")
 
-	activationEnvironment := "staging"
+	activationEnvironment := edgegrid.Staging
 
 	if c.Bool("prd") {
-		activationEnvironment = "production"
+		activationEnvironment = edgegrid.Production
 	}
 
-	apiURI := fmt.Sprintf("%s/%s/status?env=%s", URL, listID, activationEnvironment)
+	netListsActivationStatus, resp, err := apiClient.NetworkLists.GetNetworkListActivationStatus(listID, activationEnvironment)
 
-	data := dataCall(apiURI, "GET", nil)
+	if err != nil {
+		return err
+	}
 
 	if output == "json" {
-		fmt.Println(data)
+		fmt.Println(resp.Body)
 	} else {
-		result, err := ActNetListStatusAPIRespParse(data)
-		errorCheck(err)
-
-		printTableActivationStatus(result, activationEnvironment)
+		tablePrintNetworkListActivationStatus(netListsActivationStatus, string(activationEnvironment))
 	}
 
 	return nil

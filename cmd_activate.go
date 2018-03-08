@@ -1,10 +1,9 @@
 package main
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
 
+	edgegrid "github.com/RafPe/go-edgegrid"
 	"github.com/urfave/cli"
 )
 
@@ -15,32 +14,23 @@ func cmdActivateNetList(c *cli.Context) error {
 func activateNetList(c *cli.Context) error {
 	verifyArgumentByName(c, "id")
 
-	activationEnvironment := "staging"
+	activationEnvironment := edgegrid.Staging
 
 	if c.Bool("prd") {
-		activationEnvironment = "production"
+		activationEnvironment = edgegrid.Production
 	}
 
-	newNetworkListActivation := ActNetworkList{SiebelTicketID: actSiebelTicketID, Comments: actComments}
-	newNetworkListActivation.NotificationRecipients = []string{}
+	//todo: parse notification recipents
+	actNetworkListOpts.NotificationRecipients = []string{}
 
-	apiURI := fmt.Sprintf("%s/%s/activate?env=%s", URL, listID, activationEnvironment)
+	netListsActivation, _, err := apiClient.NetworkLists.ActivateNetworkList(listID, activationEnvironment, actNetworkListOpts)
 
-	jsonStr, _ := json.Marshal(newNetworkListActivation)
-	var jsonObj = []byte(jsonStr)
-
-	JSONByteArr := bytes.NewReader(jsonObj)
-
-	data := dataCall(apiURI, "POST", JSONByteArr)
-
-	if output == "json" {
-		fmt.Println(data)
-	} else {
-		_, err := NetMsgAPIRespParse(data)
-		errorCheck(err)
-
-		fmt.Println("ok")
+	if err != nil {
+		fmt.Println(err)
 	}
+
+	fmt.Println(netListsActivation.Status)
 
 	return nil
+
 }

@@ -13,18 +13,13 @@ func cmdRemoveFromnetlist(c *cli.Context) error {
 func removeFromnetlist(c *cli.Context) error {
 	verifyArgumentByName(c, "id")
 
-	apiURI := fmt.Sprintf("%s/%s/element?element=%s", URL, listID, listItem)
+	netLists, _, err := apiClient.NetworkLists.RemoveNetworkListItem(listID, listItem)
 
-	data := dataCall(apiURI, "DELETE", nil)
-
-	if output == "json" {
-		fmt.Println(data)
-	} else {
-		msg, err := NetMsgAPIRespParse(data)
-		errorCheck(err)
-
-		fmt.Println(msg.Message)
+	if err != nil {
+		return err
 	}
+
+	fmt.Println(netLists.Message)
 
 	return nil
 }

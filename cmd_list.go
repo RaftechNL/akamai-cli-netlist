@@ -6,45 +6,57 @@ import (
 	"github.com/urfave/cli"
 )
 
+// cmdlistNetLists is used by cli to execute action of listing all network lists
+//
+// cmd_list
 func cmdlistNetLists(c *cli.Context) error {
 	return listNetLists(c)
 }
 
+// cmdlistNetList is used by cli to execute action of listing specific network list
+//
+// cmd_list
 func cmdlistNetList(c *cli.Context) error {
 	return listNetList(c)
 }
 
+// listNetLists execute client API call to get all network lists
+//
+// cmd_list
 func listNetLists(c *cli.Context) error {
-	apiURI := fmt.Sprintf("%s?listType=%s&extended=%t&includeDeprecated=%t&includeElements=%t", URL, listType, extended, includeDeprecated, includeElements)
 
-	data := dataCall(apiURI, "GET", nil)
+	netLists, resp, err := apiClient.NetworkLists.ListNetworkLists(listNetListOpts)
+
+	if err != nil {
+		return err
+	}
 
 	if output == "json" {
-		fmt.Println(data)
+		fmt.Println(resp.Body)
 	} else {
-		result, err := NetListsAPIRespParse(data)
-		errorCheck(err)
-
-		printTableNetworkList(result)
+		tablePrintNetworkLists(netLists)
 	}
 
 	return nil
+
 }
 
+// listNetLists execute client API call to get specific network list
+//
+// cmd_list
 func listNetList(c *cli.Context) error {
 	verifyArgumentByName(c, "id")
 
-	apiURI := fmt.Sprintf("%s/%s?listType=%s&extended=%t&includeDeprecated=%t&includeElements=%t", URL, listID, listType, extended, includeDeprecated, includeElements)
+	netList, resp, err := apiClient.NetworkLists.GetNetworkList(listID, listNetListOpts)
 
-	data := dataCall(apiURI, "GET", nil)
+	if err != nil {
+		return err
+	}
 
 	if output == "json" {
-		fmt.Println(data)
+		fmt.Println(resp.Body)
 	} else {
-		result, err := NetListAPIRespParse(data)
-		errorCheck(err)
-
-		printTableSingleNetworkList(result)
+		tablePrintNetworkList(netList)
 	}
 
 	return nil
