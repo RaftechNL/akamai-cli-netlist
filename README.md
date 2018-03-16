@@ -103,17 +103,13 @@ This main command allows you to exexute `get` actions on Akamai.
 
     ```shell
     > $ akamai netlist get all
-    # ID                            Name                                    NumOfentries
-    36547_RPIENIAZEKTEST1           rpieniazek_test_1                       2
-    36543_APITEST                   api_test                                1
-    36542_APITEST                   api_test                                0
-    36541_APITEST                   api_test                                0
-    36540_APITEST                   api_test                                0
-    36539_APITEST                   api_test                                0
-    36538_APITEST                   api_test                                0
-    36537_APITEST                   api_test                                0
-    36536_APITEST                   api_test                                0
-    36535_APITEST                   api_test                                0
+    # ID                            Type   Name                                                               NumOfentries   Staging   Production
+    12345_DUMMYDELETE1              IP     dummy_delete_1                                                     2
+    12346_DUMMYDELETE1              IP     dummy_delete_1                                                     2
+    12347_DUMMYDELETE1              IP     dummy_delete_1                                                     2
+    969_IEEPACOUNTRYLIST            GEO    International Emergency Economic Powers Act (IEEPA) Country List   22
+    968_ITARCOUNTRYLIST             GEO    International Traffic in Arms Regulations (ITAR) Country List      27
+    967_OFACCOUNTRYLIST             GEO    Office of Foreign Asset Control (OFAC) Country List                18
     ```
 * Getting single list
 

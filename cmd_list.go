@@ -25,7 +25,13 @@ func cmdlistNetList(c *cli.Context) error {
 // cmd_list
 func listNetLists(c *cli.Context) error {
 
-	netLists, resp, err := apiClient.NetworkLists.ListNetworkLists(listNetListOpts)
+	listNetListOpts.TypeOflist = "IP"
+	netListsIP, resp, err := apiClient.NetworkLists.ListNetworkLists(listNetListOpts)
+
+	listNetListOpts.TypeOflist = "GEO"
+	netListsGEO, resp, err := apiClient.NetworkLists.ListNetworkLists(listNetListOpts)
+
+	netListsResult := append(*netListsIP, *netListsGEO...)
 
 	if err != nil {
 		return err
@@ -34,7 +40,7 @@ func listNetLists(c *cli.Context) error {
 	if output == "json" {
 		fmt.Println(resp.Body)
 	} else {
-		tablePrintNetworkLists(netLists)
+		tablePrintNetworkLists(&netListsResult)
 	}
 
 	return nil

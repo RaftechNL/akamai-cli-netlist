@@ -15,9 +15,9 @@ import (
 func tablePrintNetworkLists(netLists *[]edgegrid.AkamaiNetworkList) {
 	w := tabwriter.NewWriter(os.Stdout, 0, 0, padding, ' ', 0)
 
-	fmt.Fprintln(w, fmt.Sprint("# ID\tName\tNumOfentries\tStaging\tProduction"))
+	fmt.Fprintln(w, fmt.Sprint("# ID\tType\tName\tNumOfentries\tStaging\tProduction"))
 	for _, singleList := range *netLists {
-		fmt.Fprintln(w, fmt.Sprintf("%s\t%s\t%v\t%s\t%s", singleList.UniqueID, singleList.Name, singleList.NumEntries, singleList.StagingActivationStatus, singleList.ProductionActivationStatus))
+		fmt.Fprintln(w, fmt.Sprintf("%s\t%s\t%s\t%v\t%s\t%s", singleList.UniqueID, singleList.Type, singleList.Name, singleList.NumEntries, singleList.StagingActivationStatus, singleList.ProductionActivationStatus))
 	}
 
 	w.Flush()
