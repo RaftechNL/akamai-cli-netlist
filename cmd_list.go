@@ -1,8 +1,7 @@
 package main
 
 import (
-	"fmt"
-
+	common "github.com/apiheat/akamai-cli-common"
 	"github.com/urfave/cli"
 )
 
@@ -26,10 +25,10 @@ func cmdlistNetList(c *cli.Context) error {
 func listNetLists(c *cli.Context) error {
 
 	listNetListOpts.TypeOflist = "IP"
-	netListsIP, resp, err := apiClient.NetworkLists.ListNetworkLists(listNetListOpts)
+	netListsIP, _, err := apiClient.NetworkLists.ListNetworkLists(listNetListOpts)
 
 	listNetListOpts.TypeOflist = "GEO"
-	netListsGEO, resp, err := apiClient.NetworkLists.ListNetworkLists(listNetListOpts)
+	netListsGEO, _, err := apiClient.NetworkLists.ListNetworkLists(listNetListOpts)
 
 	netListsResult := append(*netListsIP, *netListsGEO...)
 
@@ -37,11 +36,7 @@ func listNetLists(c *cli.Context) error {
 		return err
 	}
 
-	if output == "json" {
-		fmt.Println(resp.Body)
-	} else {
-		tablePrintNetworkLists(&netListsResult)
-	}
+	common.OutputJSON(netListsResult)
 
 	return nil
 
@@ -51,19 +46,15 @@ func listNetLists(c *cli.Context) error {
 //
 // cmd_list
 func listNetList(c *cli.Context) error {
-	verifyArgumentByName(c, "id")
+	common.VerifyArgumentByName(c, "id")
 
-	netList, resp, err := apiClient.NetworkLists.GetNetworkList(listID, listNetListOpts)
+	netList, _, err := apiClient.NetworkLists.GetNetworkList(listID, listNetListOpts)
 
 	if err != nil {
 		return err
 	}
 
-	if output == "json" {
-		fmt.Println(resp.Body)
-	} else {
-		tablePrintNetworkList(netList)
-	}
+	common.OutputJSON(netList)
 
 	return nil
 }

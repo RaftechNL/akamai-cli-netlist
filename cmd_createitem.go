@@ -1,10 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"strings"
 
-	edgegrid "github.com/RafPe/go-edgegrid"
+	common "github.com/apiheat/akamai-cli-common"
+	edgegrid "github.com/apiheat/go-edgegrid"
 	"github.com/urfave/cli"
 )
 
@@ -13,7 +13,7 @@ func cmdAdd2netlist(c *cli.Context) error {
 }
 
 func add2netlist(c *cli.Context) error {
-	verifyArgumentByName(c, "id")
+	common.VerifyArgumentByName(c, "id")
 
 	// Modify existing network list
 	// Since CLI tooling does not split our slice flag we will just split it on our own
@@ -27,7 +27,7 @@ func add2netlist(c *cli.Context) error {
 		return err
 	}
 
-	fmt.Println(netLists.Message)
+	common.OutputJSON(netLists)
 
 	return nil
 

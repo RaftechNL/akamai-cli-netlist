@@ -1,8 +1,7 @@
 package main
 
 import (
-	"fmt"
-
+	common "github.com/apiheat/akamai-cli-common"
 	"github.com/urfave/cli"
 )
 
@@ -11,7 +10,7 @@ func cmdRemoveFromnetlist(c *cli.Context) error {
 }
 
 func removeFromnetlist(c *cli.Context) error {
-	verifyArgumentByName(c, "id")
+	common.VerifyArgumentByName(c, "id")
 
 	netLists, _, err := apiClient.NetworkLists.RemoveNetworkListItem(listID, listItem)
 
@@ -19,7 +18,7 @@ func removeFromnetlist(c *cli.Context) error {
 		return err
 	}
 
-	fmt.Println(netLists.Message)
+	common.OutputJSON(netLists)
 
 	return nil
 }

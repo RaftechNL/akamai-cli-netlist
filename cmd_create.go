@@ -1,8 +1,7 @@
 package main
 
 import (
-	"fmt"
-
+	common "github.com/apiheat/akamai-cli-common"
 	"github.com/urfave/cli"
 )
 
@@ -11,7 +10,7 @@ func cmdCreateNetList(c *cli.Context) error {
 }
 
 func createNetList(c *cli.Context) error {
-	verifyArgumentByName(c, "name")
+	common.VerifyArgumentByName(c, "name")
 
 	newList, _, err := apiClient.NetworkLists.CreateNetworkList(newNetworkListOpst)
 
@@ -19,7 +18,7 @@ func createNetList(c *cli.Context) error {
 		return err
 	}
 
-	fmt.Println(newList.UniqueID)
+	common.OutputJSON(newList)
 
 	return nil
 }

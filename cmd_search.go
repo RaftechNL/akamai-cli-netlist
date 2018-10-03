@@ -1,8 +1,7 @@
 package main
 
 import (
-	"fmt"
-
+	common "github.com/apiheat/akamai-cli-common"
 	"github.com/urfave/cli"
 )
 
@@ -17,19 +16,15 @@ func cmdSearchNetLists(c *cli.Context) error {
 //
 // cmd_search
 func searchNetLists(c *cli.Context) error {
-	verifyArgumentByName(c, "item")
+	common.VerifyArgumentByName(c, "item")
 
-	netLists, resp, err := apiClient.NetworkLists.SearchNetworkListItem(listItem, listNetListOpts)
+	netLists, _, err := apiClient.NetworkLists.SearchNetworkListItem(listItem, listNetListOpts)
 
 	if err != nil {
 		return err
 	}
 
-	if output == "json" {
-		fmt.Println(resp.Body)
-	} else {
-		tablePrintNetworkLists(netLists)
-	}
+	common.OutputJSON(netLists)
 
 	return nil
 }

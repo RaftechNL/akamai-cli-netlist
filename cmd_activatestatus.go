@@ -1,9 +1,8 @@
 package main
 
 import (
-	"fmt"
-
-	edgegrid "github.com/RafPe/go-edgegrid"
+	common "github.com/apiheat/akamai-cli-common"
+	edgegrid "github.com/apiheat/go-edgegrid"
 	"github.com/urfave/cli"
 )
 
@@ -12,7 +11,7 @@ func cmdActivateNetListStatus(c *cli.Context) error {
 }
 
 func activateNetListStatus(c *cli.Context) error {
-	verifyArgumentByName(c, "id")
+	common.VerifyArgumentByName(c, "id")
 
 	activationEnvironment := edgegrid.Staging
 
@@ -20,17 +19,13 @@ func activateNetListStatus(c *cli.Context) error {
 		activationEnvironment = edgegrid.Production
 	}
 
-	netListsActivationStatus, resp, err := apiClient.NetworkLists.GetNetworkListActivationStatus(listID, activationEnvironment)
+	netListsActivationStatus, _, err := apiClient.NetworkLists.GetNetworkListActivationStatus(listID, activationEnvironment)
 
 	if err != nil {
 		return err
 	}
 
-	if output == "json" {
-		fmt.Println(resp.Body)
-	} else {
-		tablePrintNetworkListActivationStatus(netListsActivationStatus, string(activationEnvironment))
-	}
+	common.OutputJSON(netListsActivationStatus)
 
 	return nil
 }

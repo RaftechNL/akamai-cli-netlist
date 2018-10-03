@@ -3,7 +3,8 @@ package main
 import (
 	"fmt"
 
-	edgegrid "github.com/RafPe/go-edgegrid"
+	common "github.com/apiheat/akamai-cli-common"
+	edgegrid "github.com/apiheat/go-edgegrid"
 	"github.com/urfave/cli"
 )
 
@@ -12,7 +13,7 @@ func cmdActivateNetList(c *cli.Context) error {
 }
 
 func activateNetList(c *cli.Context) error {
-	verifyArgumentByName(c, "id")
+	common.VerifyArgumentByName(c, "id")
 
 	activationEnvironment := edgegrid.Staging
 
@@ -20,7 +21,6 @@ func activateNetList(c *cli.Context) error {
 		activationEnvironment = edgegrid.Production
 	}
 
-	//todo: parse notification recipents
 	actNetworkListOpts.NotificationRecipients = []string{}
 
 	netListsActivation, _, err := apiClient.NetworkLists.ActivateNetworkList(listID, activationEnvironment, actNetworkListOpts)

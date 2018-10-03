@@ -1,88 +1,49 @@
 package main
 
 import (
-	"log"
+	"fmt"
 	"os"
 	"sort"
 
-	"github.com/RafPe/go-edgegrid"
-	homedir "github.com/mitchellh/go-homedir"
+	common "github.com/apiheat/akamai-cli-common"
+	edgegrid "github.com/apiheat/go-edgegrid"
 
 	"github.com/urfave/cli"
 )
 
 var (
-	apiClient                                   *edgegrid.Client
-	apiClientOpts                               edgegrid.ClientOptions
-	listNetListOpts                             edgegrid.ListNetworkListsOptions
-	actNetworkListOpts                          edgegrid.ActivateNetworkListOptions
-	newNetworkListOpst                          edgegrid.CreateNetworkListOptions
-	version, appName, output, homeDir           string
+	apiClient          *edgegrid.Client
+	apiClientOpts      *edgegrid.ClientOptions
+	appVer, appName    string
+	listNetListOpts    edgegrid.ListNetworkListsOptions
+	actNetworkListOpts edgegrid.ActivateNetworkListOptions
+	newNetworkListOpst edgegrid.CreateNetworkListOptions
+
 	listID, listName, listDescription, listItem string
 	actPrd                                      string
 	listOfItems                                 []string
-	colorOn                                     bool
-)
-
-const (
-	padding = 3
 )
 
 func main() {
-	_, inCLI := os.LookupEnv("AKAMAI_CLI")
+	app := common.CreateNewApp(appName, "A CLI to interact with Akamai network lists", appVer)
+	app.Flags = common.CreateFlags()
+	app.Before = func(c *cli.Context) error {
 
-	// Sets default value for credentials configuration file
-	// to be pointing to ~/.edgerc
-	homeDir, _ = homedir.Dir()
-	homeDir += string(os.PathSeparator) + ".edgerc"
+		apiClientOpts := &edgegrid.ClientOptions{}
+		apiClientOpts.ConfigPath = c.GlobalString("config")
+		apiClientOpts.ConfigSection = c.GlobalString("section")
+		apiClientOpts.DebugLevel = c.GlobalString("debug")
 
-	appName := "akamai-netlist"
-	if inCLI {
-		appName = "akamai netlist"
-	}
+		// NewClient: Creates new client and returns errNewExitError
+		// 			  if we failed to init
+		var errNewClient error
+		apiClient, errNewClient = edgegrid.NewClient(nil, apiClientOpts)
 
-	app := cli.NewApp()
-	app.Name = appName
-	app.HelpName = appName
-	app.Usage = "A CLI to interact with Akamai Network lists"
-	app.Version = version
-	app.Copyright = ""
-	app.Authors = []cli.Author{
-		{
-			Name: "Petr Artamonov",
-		},
-		{
-			Name: "Rafal Pieniazek",
-		},
-	}
+		if errNewClient != nil {
+			cli.NewExitError(errNewClient, 1)
+		}
 
-	// no flag => false
-	app.Flags = []cli.Flag{
-		cli.StringFlag{
-			Name:        "section, s",
-			Value:       "default",
-			Usage:       "`NAME` of section to use from credentials file",
-			Destination: &apiClientOpts.ConfigSection,
-			EnvVar:      string(edgegrid.EnvVarEdgercSection),
-		},
-		cli.StringFlag{
-			Name:        "config, c",
-			Value:       homeDir,
-			Usage:       "Location of the credentials `FILE`",
-			Destination: &apiClientOpts.ConfigPath,
-			EnvVar:      string(edgegrid.EnvVarEdgercPath),
-		},
-		cli.StringFlag{
-			Name:        "output",
-			Value:       "table",
-			Usage:       "Defines output type ( json | table ) ",
-			Destination: &output,
-		},
-		cli.BoolFlag{
-			Name:        "no-color",
-			Usage:       "Disable color output",
-			Destination: &colorOn,
-		},
+		return nil
 	}
 
 	app.Commands = []cli.Command{
@@ -322,29 +283,13 @@ func main() {
 	sort.Sort(cli.FlagsByName(app.Flags))
 	sort.Sort(cli.CommandsByName(app.Commands))
 
-	app.Before = func(c *cli.Context) error {
-
-		apiClientOpts := &edgegrid.ClientOptions{}
-		apiClientOpts.ConfigPath = getEnv(string(edgegrid.EnvVarEdgercPath), homeDir)
-		apiClientOpts.ConfigSection = getEnv(string(edgegrid.EnvVarEdgercSection), "default")
-
-		// create new API client
-		apiClient = edgegrid.NewClient(nil, apiClientOpts)
+	app.Action = func(c *cli.Context) error {
 
 		return nil
 	}
-	app.Run(os.Args)
-}
 
-func verifyArgumentByName(c *cli.Context, argName string) {
-	if c.String(argName) == "" {
-		log.Fatal("Please provide required argument(s)!")
+	err := app.Run(os.Args)
+	if err != nil {
+		fmt.Println(err)
 	}
-}
-
-func getEnv(key, fallback string) string {
-	if value, ok := os.LookupEnv(key); ok {
-		return value
-	}
-	return fallback
 }
