@@ -3,7 +3,7 @@
 builds:
   -
     binary: akamai-netlist
-    ldflags: -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}}
+    ldflags: -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}} -X main.appVer=$TRAVIS_TAG
     goos:
       - windows
       - darwin
@@ -17,12 +17,3 @@ archive:
   format: binary
 checksum:
   name_template: "{{ .ProjectName }}_{{ .Version }}_checksums.txt"
-release:
-  draft: true
-  prerelease: false
-  name_template: "{{.ProjectName}}-v{{.Version}}"
-changelog:
-  filters:
-    exclude:
-      - '^typo'
-      - 'version bump'
