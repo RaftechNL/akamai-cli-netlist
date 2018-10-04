@@ -7,7 +7,7 @@
       "name": "netlist",
       "version": "3.0.0",
       "description": "Network Lists management",
-      "bin": "https://github.com/apiheat/akamai-cli-networklist/releases/download/v{{.Version}}/akamai-{{.Name}}_{{.OS}}_{{.Arch}}{{.BinSuffix}}"
+      "bin": "https://github.com/apiheat/akamai-cli-networklist/releases/download/v{{.Version}}/akamai-cli-{{.Name}}_{{.OS}}_{{.Arch}}{{.BinSuffix}}"
     }
   ]
 }
