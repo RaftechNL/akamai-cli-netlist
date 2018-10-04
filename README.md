@@ -38,7 +38,7 @@ The tool can be used as completly standalone binary or in conjuction with akamai
 ### Akamai-cli ( recommended )
 
 1.  Execute the following from console
-    `akamai install https://github.com/apiheat/akamai-cli-cpcodes`
+    `akamai install https://github.com/apiheat/akamai-cli-netlist`
 
 ### Standalone
 As part of automated releases/builds you can download latest version from the project release page
@@ -84,5 +84,5 @@ In order to develop the tool with us do the following:
 1. Make necessary changes
 1. Make sure solution builds properly ( feel free to add tests )
    ```shell
-   go build -ldflags="-s -w -X main.appVer=v1.2.3 -X main.appName=akamai-cpcodes" -o akamai-cpcodes
+   go build -ldflags="-s -w -X main.appVer=v1.2.3 -X main.appName=akamai-cli-netlist" -o akamai-cli-netlist
    ```
