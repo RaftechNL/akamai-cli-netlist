@@ -27,11 +27,11 @@
 
 [[constraint]]
   name = "github.com/apiheat/akamai-cli-common"
-  version = "1.0.0"
+  version = "^1.0.0"
 
 [[constraint]]
   name = "github.com/apiheat/go-edgegrid"
-  version = "2.0.4"
+  version = "^3.0.0"
 
 [[constraint]]
   name = "github.com/urfave/cli"

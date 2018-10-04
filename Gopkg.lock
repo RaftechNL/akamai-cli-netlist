@@ -2,20 +2,20 @@
 
 
 [[projects]]
-  digest = "1:76d881212e54501b4337b4b480537ff6cd8189768fef9343d1284cb2fac71da5"
+  digest = "1:55ae67aaddde24da9d8655c974ce2070256badf8ee29a073cb3137275f2ce113"
   name = "github.com/apiheat/akamai-cli-common"
   packages = ["."]
   pruneopts = "UT"
-  revision = "1f0a3de08e818f7d591c28671d14133b995eb670"
-  version = "v1.0.0"
+  revision = "bc63d1e41f6e9feeaaf5d607aa388237053e5520"
+  version = "v1.1.0"
 
 [[projects]]
-  digest = "1:f9a4e0be83c1d6353738ccb872d96c3f0d544a1a86259b40702542a4352c3518"
+  digest = "1:1b392c3b84b47a946778a7a8f51e8b1f80737ae0bd4ac7e30b1567ed43379706"
   name = "github.com/apiheat/go-edgegrid"
   packages = ["."]
   pruneopts = "UT"
-  revision = "213c38830564a1a9ea106cadd38121cb6fec6cf5"
-  version = "v2.0.4"
+  revision = "a847ff7cc6103aef7256b83fb5ad6fc26c6b88ca"
+  version = "v3.1.0"
 
 [[projects]]
   digest = "1:b98e7574fc27ec166fb31195ec72c3bd0bffd73926d3612eb4c929bc5236f75b"
@@ -75,14 +75,14 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:7506d3202fc8b14e164cfeba37d0a42aafe15d5dc8ba2f908c0fe1c9cfca00a5"
+  digest = "1:8375ca24f586acd7b9a0ec8c6f24a6706a3ffa3dd7a80fd0e6e51caba139408f"
   name = "golang.org/x/sys"
   packages = [
     "unix",
     "windows",
   ]
   pruneopts = "UT"
-  revision = "219bb53033fb8511ee74a8375a3bc672a727bdce"
+  revision = "af653ce8b74f808d092db8ca9741fbb63d2a469d"
 
 [solve-meta]
   analyzer-name = "dep"
