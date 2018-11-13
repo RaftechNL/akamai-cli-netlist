@@ -5,7 +5,7 @@
   "commands": [
     {
       "name": "netlist",
-      "version": "3.0.5",
+      "version": "3.0.6",
       "description": "Network Lists management",
       "bin": "https://github.com/apiheat/akamai-cli-netlist/releases/download/v{{.Version}}/akamai-cli-{{.Name}}_{{.OS}}_{{.Arch}}{{.BinSuffix}}"
     }
