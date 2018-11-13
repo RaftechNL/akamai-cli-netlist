@@ -3,7 +3,7 @@
 builds:
   -
     binary: "{{ .ProjectName }}"
-    ldflags: -s -w -X main.appName={{ .ProjectName }} -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}} -X main.appVer={{.Tag}}
+    ldflags: -s -w -X main.appName={{ .ProjectName }} -X main.commit={{.Commit}} -X main.date={{.Date}} -X main.appVer={{.Tag}}
     goos:
       - windows
       - darwin
@@ -17,3 +17,12 @@ archive:
   format: binary
 checksum:
   name_template: "{{ .ProjectName }}_{{ .Version }}_checksums.txt"
+release:
+  name_template: "{{.ProjectName}} v{{.Version}}"
+changelog:
+  filters:
+    exclude:
+      - '[b|B]ump.*\sversion'
+      - '.*typo.*'
+      - '[V|v]ersion.*\sbump'
+      - 'Updated version in cli.json'
