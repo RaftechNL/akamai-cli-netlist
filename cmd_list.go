@@ -16,14 +16,14 @@ func cmdlistNetLists(c *cli.Context) error {
 //
 // cmd_list
 func cmdlistNetListID(c *cli.Context) error {
-	return listNetList(c)
+	return listNetListbyID(c)
 }
 
 // cmdlistNetListName is used by cli to execute action of listing specific network list
 //
 // cmd_list
 func cmdlistNetListName(c *cli.Context) error {
-	return listNetList(c)
+	return listNetListbyName(c)
 }
 
 // listNetLists execute client API call to get all network lists
@@ -36,14 +36,13 @@ func listNetLists(c *cli.Context) error {
 
 	// List all IP based
 	listNetListOptsv2.TypeOflist = "IP"
-	netListsIP, netlistErr := apiClient.NetworkListsv2.ListNetworkLists(listNetListOptsv2)
+	netListsIP, cr, netlistErr := apiClient.NetworkListsv2.ListNetworkLists(listNetListOptsv2)
 	if netlistErr != nil {
 		return netlistErr
 	}
-
 	// List all GEO based
 	listNetListOptsv2.TypeOflist = "GEO"
-	netListsGEO, netlistErr := apiClient.NetworkListsv2.ListNetworkLists(listNetListOptsv2)
+	netListsGEO, _, netlistErr := apiClient.NetworkListsv2.ListNetworkLists(listNetListOptsv2)
 	if netlistErr != nil {
 		return netlistErr
 	}
@@ -57,7 +56,7 @@ func listNetLists(c *cli.Context) error {
 // listNetLists execute client API call to get specific network list
 //
 // cmd_list
-func listNetList(c *cli.Context) error {
+func listNetListbyID(c *cli.Context) error {
 	common.VerifyArgumentByName(c, "id")
 
 	// netList, _, err := apiClient.NetworkLists.GetNetworkList(listID, listNetListOpts)
@@ -67,6 +66,21 @@ func listNetList(c *cli.Context) error {
 	// }
 
 	// common.OutputJSON(netList)
+
+	return nil
+}
+
+// listNetLists execute client API call to get specific network list
+//
+// cmd_list
+func listNetListbyName(c *cli.Context) error {
+	common.VerifyArgumentByName(c, "name")
+
+	// netList, netlistErr := apiClient.NetworkListsv2.ListNetworkLists(listNetListOptsv2)
+	// if netlistErr != nil {
+	// 	return netlistErr
+	// }
+	// common.OutputJSON(netList[0])
 
 	return nil
 }

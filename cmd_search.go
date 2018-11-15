@@ -18,13 +18,13 @@ func cmdSearchNetLists(c *cli.Context) error {
 func searchNetLists(c *cli.Context) error {
 	common.VerifyArgumentByName(c, "item")
 
-	netLists, _, err := apiClient.NetworkLists.SearchNetworkListItem(listItem, listNetListOpts)
+	// netLists, _, err := apiClient.NetworkLists.SearchNetworkListItem(listItem, listNetListOpts)
 
-	if err != nil {
-		return err
-	}
+	// if err != nil {
+	// 	return err
+	// }
 
-	common.OutputJSON(netLists)
+	// common.OutputJSON(netLists)
 
 	return nil
 }

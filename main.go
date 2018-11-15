@@ -75,7 +75,7 @@ func main() {
 					Action: cmdlistNetLists,
 				},
 				{
-					Name:  "list-id",
+					Name:  "by-id",
 					Usage: "List network list by `ID`",
 					Flags: []cli.Flag{
 						cli.StringFlag{
@@ -103,8 +103,8 @@ func main() {
 					Action: cmdlistNetListID,
 				},
 				{
-					Name:  "list-name",
-					Usage: "List network list by `name`",
+					Name:  "by-name",
+					Usage: "List network lists by `name`",
 					Flags: []cli.Flag{
 						cli.StringFlag{
 							Name:        "name",
