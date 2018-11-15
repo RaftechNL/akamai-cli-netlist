@@ -15,7 +15,7 @@ var (
 	apiClient          *edgegrid.Client
 	apiClientOpts      *edgegrid.ClientOptions
 	appVer, appName    string
-	listNetListOpts    edgegrid.ListNetworkListsOptions
+	listNetListOptsv2  edgegrid.ListNetworkListsOptionsv2
 	actNetworkListOpts edgegrid.ActivateNetworkListOptions
 	newNetworkListOpst edgegrid.CreateNetworkListOptions
 
@@ -58,29 +58,24 @@ func main() {
 						cli.BoolFlag{
 							Name:        "extended",
 							Usage:       "returns more verbose data such as creation date and activation status",
-							Destination: &listNetListOpts.Extended,
-						},
-						cli.BoolFlag{
-							Name:        "includeDeprecated",
-							Usage:       "includes network lists that have been deleted",
-							Destination: &listNetListOpts.IncludeDeprecated,
+							Destination: &listNetListOptsv2.Extended,
 						},
 						cli.BoolFlag{
 							Name:        "includeElements",
 							Usage:       "includes the full list of IP or GEO elements",
-							Destination: &listNetListOpts.IncludeElements,
+							Destination: &listNetListOptsv2.IncludeElements,
 						},
 						cli.StringFlag{
 							Name:        "listType",
 							Value:       "IP",
 							Usage:       "filters by the network list type [ IP | GEO ]",
-							Destination: &listNetListOpts.TypeOflist,
+							Destination: &listNetListOptsv2.TypeOflist,
 						},
 					},
 					Action: cmdlistNetLists,
 				},
 				{
-					Name:  "list",
+					Name:  "list-id",
 					Usage: "List network list by `ID`",
 					Flags: []cli.Flag{
 						cli.StringFlag{
@@ -91,26 +86,49 @@ func main() {
 						cli.BoolFlag{
 							Name:        "extended",
 							Usage:       "returns more verbose data such as creation date and activation status",
-							Destination: &listNetListOpts.Extended,
-						},
-						cli.BoolFlag{
-							Name:        "includeDeprecated",
-							Usage:       "includes network lists that have been deleted",
-							Destination: &listNetListOpts.IncludeDeprecated,
+							Destination: &listNetListOptsv2.Extended,
 						},
 						cli.BoolFlag{
 							Name:        "includeElements",
 							Usage:       "includes the full list of IP or GEO elements",
-							Destination: &listNetListOpts.IncludeElements,
+							Destination: &listNetListOptsv2.IncludeElements,
 						},
 						cli.StringFlag{
 							Name:        "listType",
 							Value:       "IP",
 							Usage:       "filters by the network list type [ IP | GEO ]",
-							Destination: &listNetListOpts.TypeOflist,
+							Destination: &listNetListOptsv2.TypeOflist,
 						},
 					},
-					Action: cmdlistNetList,
+					Action: cmdlistNetListID,
+				},
+				{
+					Name:  "list-name",
+					Usage: "List network list by `name`",
+					Flags: []cli.Flag{
+						cli.StringFlag{
+							Name:        "name",
+							Usage:       "list name",
+							Destination: &listNetListOptsv2.Search,
+						},
+						cli.BoolFlag{
+							Name:        "extended",
+							Usage:       "returns more verbose data such as creation date and activation status",
+							Destination: &listNetListOptsv2.Extended,
+						},
+						cli.BoolFlag{
+							Name:        "includeElements",
+							Usage:       "includes the full list of IP or GEO elements",
+							Destination: &listNetListOptsv2.IncludeElements,
+						},
+						cli.StringFlag{
+							Name:        "listType",
+							Value:       "IP",
+							Usage:       "filters by the network list type [ IP | GEO ]",
+							Destination: &listNetListOptsv2.TypeOflist,
+						},
+					},
+					Action: cmdlistNetListName,
 				},
 			},
 		},
@@ -126,18 +144,18 @@ func main() {
 				cli.BoolFlag{
 					Name:        "extended",
 					Usage:       "returns more verbose data such as creation date and activation status",
-					Destination: &listNetListOpts.Extended,
+					Destination: &listNetListOptsv2.Extended,
 				},
-				cli.BoolFlag{
-					Name:        "includeDeprecated",
-					Usage:       "includes network lists that have been deleted",
-					Destination: &listNetListOpts.IncludeDeprecated,
+				cli.StringFlag{
+					Name:        "searchPattern",
+					Usage:       "includes network lists that match search pattern",
+					Destination: &listNetListOptsv2.Search,
 				},
 				cli.StringFlag{
 					Name:        "listType",
 					Value:       "IP",
 					Usage:       "filters by the network list type [ IP | GEO ]",
-					Destination: &listNetListOpts.TypeOflist,
+					Destination: &listNetListOptsv2.TypeOflist,
 				},
 			},
 			Action: cmdSearchNetLists,
