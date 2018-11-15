@@ -40,7 +40,8 @@ func main() {
 		apiClient, errNewClient = edgegrid.NewClient(nil, apiClientOpts)
 
 		if errNewClient != nil {
-			cli.NewExitError(errNewClient, 1)
+			fmt.Println(errNewClient)
+			os.Exit(1)
 		}
 
 		return nil
