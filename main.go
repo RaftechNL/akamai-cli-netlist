@@ -275,6 +275,25 @@ func main() {
 			},
 			Action: cmdRemoveNetlist,
 		},
+		{
+			Name:  "notification",
+			Usage: "Manages network list notifications",
+			Flags: []cli.Flag{
+				cli.StringSliceFlag{
+					Name:  "networkListsIDs",
+					Usage: "recipients of notification",
+				},
+				cli.StringSliceFlag{
+					Name:  "notificationRecipients",
+					Usage: "recipients of notification",
+				},
+				cli.BoolFlag{
+					Name:  "unsubscribe",
+					Usage: "Unsubscribe from notifications",
+				},
+			},
+			Action: cmdNotificationManagement,
+		},
 	}
 
 	sort.Sort(cli.FlagsByName(app.Flags))
