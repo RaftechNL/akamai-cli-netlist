@@ -16,9 +16,9 @@ func cmdSearchNetLists(c *cli.Context) error {
 //
 // cmd_search
 func searchNetLists(c *cli.Context) error {
-	common.VerifyArgumentByName(c, "item")
+	common.VerifyArgumentByName(c, "searchPattern")
 
-	listNetListOptsv2.Search = c.String("item")
+	listNetListOptsv2.Search = c.String("searchPattern")
 	netList, _, netlistErr := apiClient.NetworkListsv2.ListNetworkLists(listNetListOptsv2)
 	if netlistErr != nil {
 		return netlistErr

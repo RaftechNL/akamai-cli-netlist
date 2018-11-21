@@ -12,11 +12,10 @@ import (
 )
 
 var (
-	apiClient         *edgegrid.Client
-	apiClientOpts     *edgegrid.ClientOptions
-	appVer, appName   string
-	listNetListOptsv2 edgegrid.ListNetworkListsOptionsv2
-	// actNetworkListOpts edgegrid.ActivateNetworkListOptions
+	apiClient          *edgegrid.Client
+	apiClientOpts      *edgegrid.ClientOptions
+	appVer, appName    string
+	listNetListOptsv2  edgegrid.ListNetworkListsOptionsv2
 	newNetworkListOpst edgegrid.NetworkListsOptionsv2
 
 	listID, listName, listDescription, listItem string
@@ -131,11 +130,6 @@ func main() {
 			Name:  "search",
 			Usage: "search by expression",
 			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:        "item",
-					Usage:       "item to search for",
-					Destination: &listItem,
-				},
 				cli.BoolFlag{
 					Name:        "extended",
 					Usage:       "returns more verbose data such as creation date and activation status",
@@ -220,40 +214,37 @@ func main() {
 		},
 		{
 			Name:  "activate",
-			Usage: "Manage network list activation",
+			Usage: "Manages network list activation",
 			Subcommands: []cli.Command{
-				// {
-				// 	Name:  "list",
-				// 	Usage: "activates network list",
-				// 	Flags: []cli.Flag{
-				// 		cli.StringFlag{
-				// 			Name:        "id",
-				// 			Usage:       "list unique-id",
-				// 			Destination: &listID,
-				// 		},
-				// 		cli.StringFlag{
-				// 			Name:        "ticket-id",
-				// 			Value:       "na",
-				// 			Usage:       "ticket for this activation",
-				// 			Destination: &actNetworkListOpts.SiebelTicketID,
-				// 		},
-				// 		cli.StringFlag{
-				// 			Name:        "comments",
-				// 			Value:       "created via akamai-cli-networklist",
-				// 			Usage:       "comment for this activation",
-				// 			Destination: &actNetworkListOpts.Comments,
-				// 		},
-				// 		cli.StringSliceFlag{
-				// 			Name:  "NotificationRecipients",
-				// 			Usage: "Notification recipients to be included in activation email",
-				// 		},
-				// 		cli.BoolFlag{
-				// 			Name:  "prd",
-				// 			Usage: "activate on production",
-				// 		},
-				// 	},
-				// 	Action: cmdActivateNetList,
-				// },
+				{
+					Name:  "list",
+					Usage: "activates network list",
+					Flags: []cli.Flag{
+						cli.StringFlag{
+							Name:        "id",
+							Usage:       "list unique-id",
+							Destination: &listID,
+						},
+						cli.StringFlag{
+							Name:  "comments",
+							Value: "activated via akamai-cli",
+							Usage: "comments",
+						},
+						cli.StringSliceFlag{
+							Name:  "notificationRecipients",
+							Usage: "recipients of notification",
+						},
+						cli.BoolFlag{
+							Name:  "fast",
+							Usage: "n/a",
+						},
+						cli.BoolFlag{
+							Name:  "prd",
+							Usage: "activate on production",
+						},
+					},
+					Action: cmdActivateNetList,
+				},
 				{
 					Name:  "status",
 					Usage: "status of network list activation",
@@ -273,39 +264,16 @@ func main() {
 			},
 		},
 		{
-			Name:  "remove",
-			Usage: "removes network list/items",
-			Subcommands: []cli.Command{
-				{
-					Name:  "item",
-					Usage: "removes item from network list items in list with specific`ID`",
-					Flags: []cli.Flag{
-						cli.StringFlag{
-							Name:        "id",
-							Usage:       "list unique-id to remove item from",
-							Destination: &listID,
-						},
-						cli.StringFlag{
-							Name:        "item",
-							Usage:       "item to be removed from the list",
-							Destination: &listItem,
-						},
-					},
-					Action: cmdlistNetListName,
-				},
-				{
-					Name:  "list",
-					Usage: "removes network list with specific`ID`",
-					Flags: []cli.Flag{
-						cli.StringFlag{
-							Name:        "id",
-							Usage:       "list unique-id to remove item from",
-							Destination: &listID,
-						},
-					},
-					Action: cmdRemoveNetlist,
+			Name:  "delete",
+			Usage: "Delete given network list",
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:        "id",
+					Usage:       "list unique-id to remove",
+					Destination: &listID,
 				},
 			},
+			Action: cmdRemoveNetlist,
 		},
 	}
 

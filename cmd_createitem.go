@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"strings"
 
 	common "github.com/apiheat/akamai-cli-common"
@@ -16,8 +17,14 @@ func addItemsToNetlist(c *cli.Context) error {
 	common.VerifyArgumentByName(c, "id")
 	common.VerifyArgumentByName(c, "items")
 
+	if len(c.StringSlice("items")) < 1 {
+		log.Fatal("Please provide items!")
+
+	}
+	itemsToAdd := strings.Split(c.StringSlice("items")[0], ",")
+
 	editListOpts := edgegrid.NetworkListsOptionsv2{
-		List: strings.Split(c.StringSlice("items")[0], ","),
+		List: itemsToAdd,
 	}
 
 	netLists, _, err := apiClient.NetworkListsv2.AppendListNetworkList(listID, editListOpts)

@@ -1,7 +1,8 @@
 package main
 
 import (
-	"fmt"
+	"log"
+	"strings"
 
 	common "github.com/apiheat/akamai-cli-common"
 	edgegrid "github.com/apiheat/go-edgegrid"
@@ -21,15 +22,25 @@ func activateNetList(c *cli.Context) error {
 		activationEnvironment = edgegrid.Production
 	}
 
-	actNetworkListOpts.NotificationRecipients = []string{}
+	if len(c.StringSlice("notificationRecipients")) < 1 {
+		log.Fatal("Please provide notificationRecipients!")
 
-	netListsActivation, _, err := apiClient.NetworkLists.ActivateNetworkList(listID, activationEnvironment, actNetworkListOpts)
+	}
+	notificationRecipients := strings.Split(c.StringSlice("notificationRecipients")[0], ",")
 
-	if err != nil {
-		fmt.Println(err)
+	actNetworkListOpts := edgegrid.NetworkListActivationOptsv2{
+		Comments: "",
+		Fast:     c.Bool("fast"),
+		NotificationRecipients: notificationRecipients,
 	}
 
-	fmt.Println(netListsActivation.Status)
+	netListsActivation, _, err := apiClient.NetworkListsv2.ActivateNetworkList(listID, activationEnvironment, actNetworkListOpts)
+
+	if err != nil {
+		return err
+	}
+
+	common.OutputJSON(netListsActivation)
 
 	return nil
 

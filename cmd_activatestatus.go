@@ -19,7 +19,7 @@ func activateNetListStatus(c *cli.Context) error {
 		activationEnvironment = edgegrid.Production
 	}
 
-	netListsActivationStatus, _, err := apiClient.NetworkLists.GetNetworkListActivationStatus(listID, activationEnvironment)
+	netListsActivationStatus, _, err := apiClient.NetworkListsv2.GetNetworkListActStatus(listID, activationEnvironment)
 
 	if err != nil {
 		return err
