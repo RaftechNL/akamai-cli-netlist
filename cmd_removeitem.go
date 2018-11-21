@@ -5,14 +5,15 @@ import (
 	"github.com/urfave/cli"
 )
 
-func cmdRemoveFromnetlist(c *cli.Context) error {
-	return removeFromnetlist(c)
+func cmdRemoveItemFromNetlist(c *cli.Context) error {
+	return removeItemFromNetlist(c)
 }
 
-func removeFromnetlist(c *cli.Context) error {
+func removeItemFromNetlist(c *cli.Context) error {
 	common.VerifyArgumentByName(c, "id")
+	common.VerifyArgumentByName(c, "element")
 
-	netLists, _, err := apiClient.NetworkLists.RemoveNetworkListItem(listID, listItem)
+	netLists, _, err := apiClient.NetworkListsv2.RemoveNetworkListElement(listID, c.String("element"))
 
 	if err != nil {
 		return err

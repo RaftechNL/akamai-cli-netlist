@@ -17,7 +17,7 @@ var (
 	appVer, appName   string
 	listNetListOptsv2 edgegrid.ListNetworkListsOptionsv2
 	// actNetworkListOpts edgegrid.ActivateNetworkListOptions
-	newNetworkListOpst edgegrid.CreateNetworkListsOptionsv2
+	newNetworkListOpst edgegrid.NetworkListsOptionsv2
 
 	listID, listName, listDescription, listItem string
 	actPrd                                      string
@@ -156,41 +156,16 @@ func main() {
 			Action: cmdSearchNetLists,
 		},
 		{
-			Name:  "create",
-			Usage: "Creates network list",
+			Name:  "items",
+			Usage: "manages items in network lists",
 			Subcommands: []cli.Command{
 				{
-					Name:  "list",
-					Usage: "creates new network list",
-					Flags: []cli.Flag{
-						cli.StringFlag{
-							Name:        "name",
-							Value:       "",
-							Usage:       "name for the new list",
-							Destination: &newNetworkListOpst.Name,
-						},
-						cli.StringFlag{
-							Name:        "description",
-							Value:       "created via akamai-cli-networklist",
-							Usage:       "description for the new list",
-							Destination: &newNetworkListOpst.Description,
-						},
-						cli.StringFlag{
-							Name:        "type",
-							Value:       "IP",
-							Usage:       "defines type of list for creation (IP/GEO)",
-							Destination: &newNetworkListOpst.Type,
-						},
-					},
-					Action: cmdCreateNetList,
-				},
-				{
-					Name:  "item",
-					Usage: "creates new network list item in list with specific`ID`",
+					Name:  "add",
+					Usage: "adds items to network list",
 					Flags: []cli.Flag{
 						cli.StringFlag{
 							Name:        "id",
-							Usage:       "list unique-id to add item to",
+							Usage:       "list unique-id",
 							Destination: &listID,
 						},
 						cli.StringSliceFlag{
@@ -198,9 +173,50 @@ func main() {
 							Usage: "items to be included",
 						},
 					},
-					Action: cmdAdd2netlist,
+					Action: cmdAddItemsToNetlist,
+				},
+				{
+					Name:  "remove",
+					Usage: "remove item from network list",
+					Flags: []cli.Flag{
+						cli.StringFlag{
+							Name:        "id",
+							Usage:       "list unique-id",
+							Destination: &listID,
+						},
+						cli.StringFlag{
+							Name:  "element",
+							Usage: "element to be removed",
+						},
+					},
+					Action: cmdRemoveItemFromNetlist,
 				},
 			},
+		},
+		{
+			Name:  "create",
+			Usage: "Creates network list/items",
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:        "name",
+					Value:       "",
+					Usage:       "name for the new list",
+					Destination: &newNetworkListOpst.Name,
+				},
+				cli.StringFlag{
+					Name:        "description",
+					Value:       "created via akamai-cli-networklist",
+					Usage:       "description for the new list",
+					Destination: &newNetworkListOpst.Description,
+				},
+				cli.StringFlag{
+					Name:        "type",
+					Value:       "IP",
+					Usage:       "defines type of list for creation (IP/GEO)",
+					Destination: &newNetworkListOpst.Type,
+				},
+			},
+			Action: cmdCreateNetList,
 		},
 		{
 			Name:  "activate",
@@ -275,7 +291,7 @@ func main() {
 							Destination: &listItem,
 						},
 					},
-					Action: cmdRemoveFromnetlist,
+					Action: cmdlistNetListName,
 				},
 				{
 					Name:  "list",

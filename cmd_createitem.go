@@ -8,20 +8,19 @@ import (
 	"github.com/urfave/cli"
 )
 
-func cmdAdd2netlist(c *cli.Context) error {
-	return add2netlist(c)
+func cmdAddItemsToNetlist(c *cli.Context) error {
+	return addItemsToNetlist(c)
 }
 
-func add2netlist(c *cli.Context) error {
+func addItemsToNetlist(c *cli.Context) error {
 	common.VerifyArgumentByName(c, "id")
+	common.VerifyArgumentByName(c, "items")
 
-	// Modify existing network list
-	// Since CLI tooling does not split our slice flag we will just split it on our own
-	editListOpts := edgegrid.CreateNetworkListOptions{
+	editListOpts := edgegrid.NetworkListsOptionsv2{
 		List: strings.Split(c.StringSlice("items")[0], ","),
 	}
 
-	netLists, _, err := apiClient.NetworkLists.AddNetworkListItems(listID, editListOpts)
+	netLists, _, err := apiClient.NetworkListsv2.AppendListNetworkList(listID, editListOpts)
 
 	if err != nil {
 		return err
