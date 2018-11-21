@@ -12,7 +12,7 @@ func cmdCreateNetList(c *cli.Context) error {
 func createNetList(c *cli.Context) error {
 	common.VerifyArgumentByName(c, "name")
 
-	newList, _, err := apiClient.NetworkLists.CreateNetworkList(newNetworkListOpst)
+	newList, _, err := apiClient.NetworkListsv2.CreateNetworkList(newNetworkListOpst)
 
 	if err != nil {
 		return err
