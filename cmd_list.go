@@ -36,10 +36,11 @@ func listNetLists(c *cli.Context) error {
 
 	// List all IP based
 	listNetListOptsv2.TypeOflist = "IP"
-	netListsIP, cr, netlistErr := apiClient.NetworkListsv2.ListNetworkLists(listNetListOptsv2)
+	netListsIP, _, netlistErr := apiClient.NetworkListsv2.ListNetworkLists(listNetListOptsv2)
 	if netlistErr != nil {
 		return netlistErr
 	}
+
 	// List all GEO based
 	listNetListOptsv2.TypeOflist = "GEO"
 	netListsGEO, _, netlistErr := apiClient.NetworkListsv2.ListNetworkLists(listNetListOptsv2)
@@ -59,13 +60,12 @@ func listNetLists(c *cli.Context) error {
 func listNetListbyID(c *cli.Context) error {
 	common.VerifyArgumentByName(c, "id")
 
-	// netList, _, err := apiClient.NetworkLists.GetNetworkList(listID, listNetListOpts)
+	netList, _, netlistErr := apiClient.NetworkListsv2.GetNetworkList(listID, listNetListOptsv2)
+	if netlistErr != nil {
+		return netlistErr
+	}
 
-	// if err != nil {
-	// 	return err
-	// }
-
-	// common.OutputJSON(netList)
+	common.OutputJSON(netList)
 
 	return nil
 }
@@ -76,11 +76,13 @@ func listNetListbyID(c *cli.Context) error {
 func listNetListbyName(c *cli.Context) error {
 	common.VerifyArgumentByName(c, "name")
 
-	// netList, netlistErr := apiClient.NetworkListsv2.ListNetworkLists(listNetListOptsv2)
-	// if netlistErr != nil {
-	// 	return netlistErr
-	// }
-	// common.OutputJSON(netList[0])
+	listNetListOptsv2.Search = c.String("name")
+	netList, _, netlistErr := apiClient.NetworkListsv2.ListNetworkLists(listNetListOptsv2)
+	if netlistErr != nil {
+		return netlistErr
+	}
+
+	common.OutputJSON(netList)
 
 	return nil
 }

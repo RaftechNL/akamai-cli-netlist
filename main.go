@@ -12,12 +12,12 @@ import (
 )
 
 var (
-	apiClient          *edgegrid.Client
-	apiClientOpts      *edgegrid.ClientOptions
-	appVer, appName    string
-	listNetListOptsv2  edgegrid.ListNetworkListsOptionsv2
-	actNetworkListOpts edgegrid.ActivateNetworkListOptions
-	newNetworkListOpst edgegrid.CreateNetworkListOptions
+	apiClient         *edgegrid.Client
+	apiClientOpts     *edgegrid.ClientOptions
+	appVer, appName   string
+	listNetListOptsv2 edgegrid.ListNetworkListsOptionsv2
+	// actNetworkListOpts edgegrid.ActivateNetworkListOptions
+	newNetworkListOpst edgegrid.CreateNetworkListsOptionsv2
 
 	listID, listName, listDescription, listItem string
 	actPrd                                      string
@@ -93,12 +93,6 @@ func main() {
 							Name:        "includeElements",
 							Usage:       "includes the full list of IP or GEO elements",
 							Destination: &listNetListOptsv2.IncludeElements,
-						},
-						cli.StringFlag{
-							Name:        "listType",
-							Value:       "IP",
-							Usage:       "filters by the network list type [ IP | GEO ]",
-							Destination: &listNetListOptsv2.TypeOflist,
 						},
 					},
 					Action: cmdlistNetListID,
@@ -212,38 +206,38 @@ func main() {
 			Name:  "activate",
 			Usage: "Manage network list activation",
 			Subcommands: []cli.Command{
-				{
-					Name:  "list",
-					Usage: "activates network list",
-					Flags: []cli.Flag{
-						cli.StringFlag{
-							Name:        "id",
-							Usage:       "list unique-id",
-							Destination: &listID,
-						},
-						cli.StringFlag{
-							Name:        "ticket-id",
-							Value:       "na",
-							Usage:       "ticket for this activation",
-							Destination: &actNetworkListOpts.SiebelTicketID,
-						},
-						cli.StringFlag{
-							Name:        "comments",
-							Value:       "created via akamai-cli-networklist",
-							Usage:       "comment for this activation",
-							Destination: &actNetworkListOpts.Comments,
-						},
-						cli.StringSliceFlag{
-							Name:  "NotificationRecipients",
-							Usage: "Notification recipients to be included in activation email",
-						},
-						cli.BoolFlag{
-							Name:  "prd",
-							Usage: "activate on production",
-						},
-					},
-					Action: cmdActivateNetList,
-				},
+				// {
+				// 	Name:  "list",
+				// 	Usage: "activates network list",
+				// 	Flags: []cli.Flag{
+				// 		cli.StringFlag{
+				// 			Name:        "id",
+				// 			Usage:       "list unique-id",
+				// 			Destination: &listID,
+				// 		},
+				// 		cli.StringFlag{
+				// 			Name:        "ticket-id",
+				// 			Value:       "na",
+				// 			Usage:       "ticket for this activation",
+				// 			Destination: &actNetworkListOpts.SiebelTicketID,
+				// 		},
+				// 		cli.StringFlag{
+				// 			Name:        "comments",
+				// 			Value:       "created via akamai-cli-networklist",
+				// 			Usage:       "comment for this activation",
+				// 			Destination: &actNetworkListOpts.Comments,
+				// 		},
+				// 		cli.StringSliceFlag{
+				// 			Name:  "NotificationRecipients",
+				// 			Usage: "Notification recipients to be included in activation email",
+				// 		},
+				// 		cli.BoolFlag{
+				// 			Name:  "prd",
+				// 			Usage: "activate on production",
+				// 		},
+				// 	},
+				// 	Action: cmdActivateNetList,
+				// },
 				{
 					Name:  "status",
 					Usage: "status of network list activation",
