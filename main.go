@@ -52,8 +52,9 @@ func main() {
 			Usage: "List network lists objects",
 			Subcommands: []cli.Command{
 				{
-					Name:  "all",
-					Usage: "List network lists",
+					Name:      "all",
+					Usage:     "Gets all network list in the account",
+					UsageText: fmt.Sprintf("%s get all [command options]", appName),
 					Flags: []cli.Flag{
 						cli.BoolFlag{
 							Name:        "extended",
@@ -75,8 +76,9 @@ func main() {
 					Action: cmdlistNetLists,
 				},
 				{
-					Name:  "by-id",
-					Usage: "List network list by `ID`",
+					Name:      "by-id",
+					Usage:     "Gets a network list by unique-id",
+					UsageText: fmt.Sprintf("%s get by-id --id UNIQUE-ID [command options]", appName),
 					Flags: []cli.Flag{
 						cli.StringFlag{
 							Name:        "id",
@@ -97,8 +99,9 @@ func main() {
 					Action: cmdlistNetListID,
 				},
 				{
-					Name:  "by-name",
-					Usage: "List network lists by `name`",
+					Name:      "by-name",
+					Usage:     "Gets a network list by name",
+					UsageText: fmt.Sprintf("%s get by-id --name NAME [command options]", appName),
 					Flags: []cli.Flag{
 						cli.StringFlag{
 							Name:        "name",
@@ -127,8 +130,9 @@ func main() {
 			},
 		},
 		{
-			Name:  "search",
-			Usage: "search by expression",
+			Name:      "search",
+			Usage:     "Finds all network lists that match specific expression ( either name or network element )",
+			UsageText: fmt.Sprintf("%s search --searchPattern SEARCH-ELEMENT [command options]", appName),
 			Flags: []cli.Flag{
 				cli.BoolFlag{
 					Name:        "extended",
@@ -151,11 +155,12 @@ func main() {
 		},
 		{
 			Name:  "items",
-			Usage: "manages items in network lists",
+			Usage: "Manages items in network lists",
 			Subcommands: []cli.Command{
 				{
-					Name:  "add",
-					Usage: "adds items to network list",
+					Name:      "add",
+					Usage:     "Adds network list element to provided network list",
+					UsageText: fmt.Sprintf("%s items add --id UNIQUE-ID --items ITEM1,ITEM2,ITEM3", appName),
 					Flags: []cli.Flag{
 						cli.StringFlag{
 							Name:        "id",
@@ -170,8 +175,9 @@ func main() {
 					Action: cmdAddItemsToNetlist,
 				},
 				{
-					Name:  "remove",
-					Usage: "remove item from network list",
+					Name:      "remove",
+					Usage:     "Removes network list element from provided network list",
+					UsageText: fmt.Sprintf("%s items remove --id UNIQUE-ID --element ELEMENT", appName),
 					Flags: []cli.Flag{
 						cli.StringFlag{
 							Name:        "id",
@@ -188,8 +194,9 @@ func main() {
 			},
 		},
 		{
-			Name:  "create",
-			Usage: "Creates network list/items",
+			Name:      "create",
+			Usage:     "Creates new network list",
+			UsageText: fmt.Sprintf("%s create --name NETWORK-LIST-NAME [command options]", appName),
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:        "name",
@@ -214,11 +221,12 @@ func main() {
 		},
 		{
 			Name:  "activate",
-			Usage: "Manages network list activation",
+			Usage: "Manages network list activation/status",
 			Subcommands: []cli.Command{
 				{
-					Name:  "list",
-					Usage: "activates network list",
+					Name:      "list",
+					Usage:     "Activates network list on given network",
+					UsageText: fmt.Sprintf("%s activate list --id UNIQUE-ID [command options]", appName),
 					Flags: []cli.Flag{
 						cli.StringFlag{
 							Name:        "id",
@@ -246,8 +254,9 @@ func main() {
 					Action: cmdActivateNetList,
 				},
 				{
-					Name:  "status",
-					Usage: "status of network list activation",
+					Name:      "status",
+					Usage:     "Displays activation status for given network list",
+					UsageText: fmt.Sprintf("%s activate status --id UNIQUE-ID [command options]", appName),
 					Flags: []cli.Flag{
 						cli.StringFlag{
 							Name:        "id",
@@ -264,8 +273,9 @@ func main() {
 			},
 		},
 		{
-			Name:  "delete",
-			Usage: "Delete given network list",
+			Name:      "delete",
+			Usage:     "Deletes network list ( ** REQUIRES LIST TO BE DEACTIVATED ON BOTH NETWORKS ** )",
+			UsageText: fmt.Sprintf("%s delete --id UNIQUE-ID", appName),
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:        "id",
@@ -276,8 +286,9 @@ func main() {
 			Action: cmdRemoveNetlist,
 		},
 		{
-			Name:  "notification",
-			Usage: "Manages network list notifications",
+			Name:      "notification",
+			Usage:     "Manages network list subscription notifications ( SUBSCRIBE by default ) ",
+			UsageText: fmt.Sprintf("%s notification status --id UNIQUE-ID --notificationRecipients RECIPIENTS [command options]", appName),
 			Flags: []cli.Flag{
 				cli.StringSliceFlag{
 					Name:  "networkListsIDs",

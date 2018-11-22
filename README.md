@@ -46,32 +46,103 @@ As part of automated releases/builds you can download latest version from the pr
 # Actions
 
 ```shell
+Incorrect Usage. flag provided but not defined: -?
+
 NAME:
-   akamai-cli-netlist - A CLI to interact with Akamai network lists
+    - A CLI to interact with Akamai network lists
 
 USAGE:
-   akamai-cli-netlist [global options] command [command options] [arguments...]
+    [global options] command [command options] [arguments...]
 
 AUTHORS:
    Petr Artamonov
    Rafal Pieniazek
 
 COMMANDS:
-     activate  Manage network list activation
-     create    Creates network list
-     get       List network lists objects
-     remove    removes network list/items
-     search    search by expression
-     help, h   Shows a list of commands or help for one command
+     activate      Manages network list activation/status
+     create        Creates new network list
+     delete        Deletes network list ( ** REQUIRES LIST TO BE DEACTIVATED ON BOTH NETWORKS ** )
+     get           List network lists objects
+     items         Manages items in network lists
+     notification  Manages network list subscription notifications ( SUBSCRIBE by default ) 
+     search        Finds all network lists that match specific expression ( either name or network element )
+     help, h       Shows a list of commands or help for one command
 
 GLOBAL OPTIONS:
-   --config FILE, -c FILE   Location of the credentials FILE (default: "/Users/rpieniazek/.edgerc") [$AKAMAI_EDGERC_CONFIG]
+   --config FILE, -c FILE   Location of the credentials FILE (default: "/Users/rafpe/.edgerc") [$AKAMAI_EDGERC_CONFIG]
    --debug value            Debug Level [$AKAMAI_EDGERC_DEBUGLEVEL]
    --section NAME, -s NAME  NAME of section to use from credentials file (default: "default") [$AKAMAI_EDGERC_SECTION]
    --help, -h               show help
    --version, -v            print the version
+flag provided but not defined: -?
+
 
 ```
+
+# Example commands
+Below you may find examples on how some commands can be used together 
+* get a specific network list by unique Id
+   ```
+   akamai netlist get by-id --id UNIQUE-ID
+   ```
+
+* get a specific network list by name
+   ```
+   akamai netlist get by-name --name SOME-NAME
+   ```
+
+* Get elements from a network list based on its name 
+   ```
+   akamai netlist get by-name --name some_list_name --includeElements | jq -r '.[].list'
+   ```
+
+* Find all network list where it has specific element or name
+   ```
+   akamai netlist search --searchPattern 1.2.3.4 | jq
+
+   akamai netlist search --searchPattern someneNa | jq 
+   ```
+
+* Remove element from network list 
+   ```
+   akamai netlist items remove --id 1234_UNIQID --element 1.2.3.4
+   ```
+
+* Create new network list
+   ```
+   akamai netlist create list --name whitelist_placeholder
+   ```
+
+* Add items to network list 
+   ```
+   akamai netlist items add --id UNIQUE-ID --items ITEM1,ITEM2,ITEM3
+   ```
+* Subscribe to notifications 
+   ```
+   akamai netlist notification --networkListsIDs 12345_SOMENAME --notificationRecipients rafpe@mailinator.com
+   ```
+
+* Unsubscribe from notifications 
+   ```
+   akamai netlist notification --networkListsIDs 12345_SOMENAME --notificationRecipients rafpe@mailinator.com --unsubscribe
+   ```
+* Activate network list 
+   ```
+   akamai netlist activate list --id 12345_SOMENAME --notificationRecipients rafpe@mailinator.com
+
+   akamai netlist activate list --id 12345_SOMENAME --notificationRecipients rafpe@mailinator.com --prd
+   ```
+* Get activation status
+   ```
+   akamai netlist activate status --id 12345_SOMENAME 
+   ```
+
+
+# Changes 
+## v4.0.0
+* Move to network lists API endpoint v2
+* Use go-edgegrid client v4.X.X
+* Remove support for network list API v1
 
 # Development
 In order to develop the tool with us do the following:
@@ -79,10 +150,10 @@ In order to develop the tool with us do the following:
 1. Clone it to your folder ( within *GO* path )
 1. Ensure you can restore dependencies by running 
    ```shell
-   dep ensure
+   dep ensure -v
    ```
 1. Make necessary changes
 1. Make sure solution builds properly ( feel free to add tests )
    ```shell
-   go build -ldflags="-s -w -X main.appVer=v1.2.3 -X main.appName=akamai-cli-netlist" -o akamai-cli-netlist
+   go build -ldflags="-s -w -X main.appVer=1.2.3 -X main.appName=$(basename `pwd`)"
    ```
