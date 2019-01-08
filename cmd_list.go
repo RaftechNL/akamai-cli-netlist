@@ -2,34 +2,29 @@ package main
 
 import (
 	common "github.com/apiheat/akamai-cli-common"
+	edgegrid "github.com/apiheat/go-edgegrid"
 	"github.com/urfave/cli"
 )
 
 // cmdlistNetLists is used by cli to execute action of listing all network lists
-//
-// cmd_list
 func cmdlistNetLists(c *cli.Context) error {
 	return listNetLists(c)
 }
 
 // cmdlistNetListId is used by cli to execute action of listing specific network list
-//
-// cmd_list
 func cmdlistNetListID(c *cli.Context) error {
 	return listNetListbyID(c)
 }
 
 // cmdlistNetListName is used by cli to execute action of listing specific network list
-//
-// cmd_list
 func cmdlistNetListName(c *cli.Context) error {
 	return listNetListbyName(c)
 }
 
 // listNetLists execute client API call to get all network lists
-//
-// cmd_list
 func listNetLists(c *cli.Context) error {
+
+	listNetListOptsv2 := edgegrid.ListNetworkListsOptionsv2{}
 
 	// Since we are listing all we do not filter results
 	listNetListOptsv2.Search = ""
@@ -55,12 +50,14 @@ func listNetLists(c *cli.Context) error {
 }
 
 // listNetLists execute client API call to get specific network list
-//
-// cmd_list
 func listNetListbyID(c *cli.Context) error {
 	common.VerifyArgumentByName(c, "id")
 
-	netList, _, netlistErr := apiClient.NetworkListsv2.GetNetworkList(listID, listNetListOptsv2)
+	listNetListOptsv2 := edgegrid.ListNetworkListsOptionsv2{}
+	listNetListOptsv2.IncludeElements = c.Bool("includeElements")
+	listNetListOptsv2.Extended = c.Bool("extended")
+
+	netList, _, netlistErr := apiClient.NetworkListsv2.GetNetworkList(c.String("id"), listNetListOptsv2)
 	if netlistErr != nil {
 		return netlistErr
 	}
@@ -71,12 +68,15 @@ func listNetListbyID(c *cli.Context) error {
 }
 
 // listNetLists execute client API call to get specific network list
-//
-// cmd_list
 func listNetListbyName(c *cli.Context) error {
 	common.VerifyArgumentByName(c, "name")
 
+	listNetListOptsv2 := edgegrid.ListNetworkListsOptionsv2{}
+	listNetListOptsv2.IncludeElements = c.Bool("includeElements")
+	listNetListOptsv2.Extended = c.Bool("extended")
 	listNetListOptsv2.Search = c.String("name")
+	listNetListOptsv2.TypeOflist = c.String("listType")
+
 	netList, _, netlistErr := apiClient.NetworkListsv2.ListNetworkLists(listNetListOptsv2)
 	if netlistErr != nil {
 		return netlistErr
