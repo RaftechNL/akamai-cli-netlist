@@ -51,20 +51,17 @@ func main() {
 					UsageText: fmt.Sprintf("%s get all [command options]", appName),
 					Flags: []cli.Flag{
 						cli.BoolFlag{
-							Name:        "extended",
-							Usage:       "returns more verbose data such as creation date and activation status",
-							Destination: &listNetListOptsv2.Extended,
+							Name:  "extended",
+							Usage: "returns more verbose data such as creation date and activation status",
 						},
 						cli.BoolFlag{
-							Name:        "includeElements",
-							Usage:       "includes the full list of IP or GEO elements",
-							Destination: &listNetListOptsv2.IncludeElements,
+							Name:  "includeElements",
+							Usage: "includes the full list of IP or GEO elements",
 						},
 						cli.StringFlag{
-							Name:        "listType",
-							Value:       "IP",
-							Usage:       "filters by the network list type [ IP | GEO ]",
-							Destination: &listNetListOptsv2.TypeOflist,
+							Name:  "listType",
+							Value: "IP",
+							Usage: "filters by the network list type [ IP | GEO ]",
 						},
 					},
 					Action: cmdlistNetLists,
@@ -75,19 +72,16 @@ func main() {
 					UsageText: fmt.Sprintf("%s get by-id --id UNIQUE-ID [command options]", appName),
 					Flags: []cli.Flag{
 						cli.StringFlag{
-							Name:        "id",
-							Usage:       "list unique-id",
-							Destination: &listID,
+							Name:  "id",
+							Usage: "list unique-id",
 						},
 						cli.BoolFlag{
-							Name:        "extended",
-							Usage:       "returns more verbose data such as creation date and activation status",
-							Destination: &listNetListOptsv2.Extended,
+							Name:  "extended",
+							Usage: "returns more verbose data such as creation date and activation status",
 						},
 						cli.BoolFlag{
-							Name:        "includeElements",
-							Usage:       "includes the full list of IP or GEO elements",
-							Destination: &listNetListOptsv2.IncludeElements,
+							Name:  "includeElements",
+							Usage: "includes the full list of IP or GEO elements",
 						},
 					},
 					Action: cmdlistNetListID,
@@ -98,25 +92,21 @@ func main() {
 					UsageText: fmt.Sprintf("%s get by-id --name NAME [command options]", appName),
 					Flags: []cli.Flag{
 						cli.StringFlag{
-							Name:        "name",
-							Usage:       "list name",
-							Destination: &listNetListOptsv2.Search,
+							Name:  "name",
+							Usage: "list name",
 						},
 						cli.BoolFlag{
-							Name:        "extended",
-							Usage:       "returns more verbose data such as creation date and activation status",
-							Destination: &listNetListOptsv2.Extended,
+							Name:  "extended",
+							Usage: "returns more verbose data such as creation date and activation status",
 						},
 						cli.BoolFlag{
-							Name:        "includeElements",
-							Usage:       "includes the full list of IP or GEO elements",
-							Destination: &listNetListOptsv2.IncludeElements,
+							Name:  "includeElements",
+							Usage: "includes the full list of IP or GEO elements",
 						},
 						cli.StringFlag{
-							Name:        "listType",
-							Value:       "IP",
-							Usage:       "filters by the network list type [ IP | GEO ]",
-							Destination: &listNetListOptsv2.TypeOflist,
+							Name:  "listType",
+							Value: "IP",
+							Usage: "filters by the network list type [ IP | GEO ]",
 						},
 					},
 					Action: cmdlistNetListName,
@@ -129,20 +119,17 @@ func main() {
 			UsageText: fmt.Sprintf("%s search --searchPattern SEARCH-ELEMENT [command options]", appName),
 			Flags: []cli.Flag{
 				cli.BoolFlag{
-					Name:        "extended",
-					Usage:       "returns more verbose data such as creation date and activation status",
-					Destination: &listNetListOptsv2.Extended,
+					Name:  "extended",
+					Usage: "returns more verbose data such as creation date and activation status",
 				},
 				cli.StringFlag{
-					Name:        "searchPattern",
-					Usage:       "includes network lists that match search pattern",
-					Destination: &listNetListOptsv2.Search,
+					Name:  "searchPattern",
+					Usage: "includes network lists that match search pattern",
 				},
 				cli.StringFlag{
-					Name:        "listType",
-					Value:       "IP",
-					Usage:       "filters by the network list type [ IP | GEO ]",
-					Destination: &listNetListOptsv2.TypeOflist,
+					Name:  "listType",
+					Value: "IP",
+					Usage: "filters by the network list type [ IP | GEO ]",
 				},
 			},
 			Action: cmdSearchNetLists,
@@ -157,9 +144,8 @@ func main() {
 					UsageText: fmt.Sprintf("%s items add --id UNIQUE-ID --items ITEM1,ITEM2,ITEM3", appName),
 					Flags: []cli.Flag{
 						cli.StringFlag{
-							Name:        "id",
-							Usage:       "list unique-id",
-							Destination: &listID,
+							Name:  "id",
+							Usage: "list unique-id",
 						},
 						cli.StringSliceFlag{
 							Name:  "items",
@@ -174,9 +160,8 @@ func main() {
 					UsageText: fmt.Sprintf("%s items remove --id UNIQUE-ID --element ELEMENT", appName),
 					Flags: []cli.Flag{
 						cli.StringFlag{
-							Name:        "id",
-							Usage:       "list unique-id",
-							Destination: &listID,
+							Name:  "id",
+							Usage: "list unique-id",
 						},
 						cli.StringFlag{
 							Name:  "element",
@@ -193,22 +178,19 @@ func main() {
 			UsageText: fmt.Sprintf("%s create --name NETWORK-LIST-NAME [command options]", appName),
 			Flags: []cli.Flag{
 				cli.StringFlag{
-					Name:        "name",
-					Value:       "",
-					Usage:       "name for the new list",
-					Destination: &newNetworkListOpst.Name,
+					Name:  "name",
+					Value: "",
+					Usage: "name for the new list",
 				},
 				cli.StringFlag{
-					Name:        "description",
-					Value:       "created via akamai-cli-networklist",
-					Usage:       "description for the new list",
-					Destination: &newNetworkListOpst.Description,
+					Name:  "description",
+					Value: "created via akamai-cli-networklist",
+					Usage: "description for the new list",
 				},
 				cli.StringFlag{
-					Name:        "type",
-					Value:       "IP",
-					Usage:       "defines type of list for creation (IP/GEO)",
-					Destination: &newNetworkListOpst.Type,
+					Name:  "type",
+					Value: "IP",
+					Usage: "defines type of list for creation (IP/GEO)",
 				},
 			},
 			Action: cmdCreateNetList,
@@ -223,9 +205,8 @@ func main() {
 					UsageText: fmt.Sprintf("%s activate list --id UNIQUE-ID [command options]", appName),
 					Flags: []cli.Flag{
 						cli.StringFlag{
-							Name:        "id",
-							Usage:       "list unique-id",
-							Destination: &listID,
+							Name:  "id",
+							Usage: "list unique-id",
 						},
 						cli.StringFlag{
 							Name:  "comments",
@@ -253,9 +234,8 @@ func main() {
 					UsageText: fmt.Sprintf("%s activate status --id UNIQUE-ID [command options]", appName),
 					Flags: []cli.Flag{
 						cli.StringFlag{
-							Name:        "id",
-							Usage:       "list unique-id",
-							Destination: &listID,
+							Name:  "id",
+							Usage: "list unique-id",
 						},
 						cli.BoolFlag{
 							Name:  "prd",
@@ -272,9 +252,8 @@ func main() {
 			UsageText: fmt.Sprintf("%s delete --id UNIQUE-ID", appName),
 			Flags: []cli.Flag{
 				cli.StringFlag{
-					Name:        "id",
-					Usage:       "list unique-id to remove",
-					Destination: &listID,
+					Name:  "id",
+					Usage: "list unique-id to remove",
 				},
 			},
 			Action: cmdRemoveNetlist,
