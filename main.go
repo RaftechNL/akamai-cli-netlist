@@ -7,40 +7,34 @@ import (
 
 	common "github.com/apiheat/akamai-cli-common"
 	edgegrid "github.com/apiheat/go-edgegrid"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/urfave/cli"
 )
 
 var (
-	apiClient          *edgegrid.Client
-	apiClientOpts      *edgegrid.ClientOptions
-	appVer, appName    string
-	listNetListOptsv2  edgegrid.ListNetworkListsOptionsv2
-	newNetworkListOpst edgegrid.NetworkListsOptionsv2
-
-	listID, listName, listDescription, listItem string
-	actPrd                                      string
-	listOfItems                                 []string
+	apiClient       *edgegrid.Client
+	appVer, appName string
 )
 
 func main() {
 	app := common.CreateNewApp(appName, "A CLI to interact with Akamai network lists", appVer)
 	app.Flags = common.CreateFlags()
 	app.Before = func(c *cli.Context) error {
+		var err error
 
+		// Provide struct details needed for apiClient init
 		apiClientOpts := &edgegrid.ClientOptions{}
 		apiClientOpts.ConfigPath = c.GlobalString("config")
 		apiClientOpts.ConfigSection = c.GlobalString("section")
 		apiClientOpts.DebugLevel = c.GlobalString("debug")
+		apiClientOpts.AccountSwitchKey = c.GlobalString("ask")
 
-		// NewClient: Creates new client and returns errNewExitError
-		// 			  if we failed to init
-		var errNewClient error
-		apiClient, errNewClient = edgegrid.NewClient(nil, apiClientOpts)
+		apiClient, err = common.EdgeClientInit(apiClientOpts)
 
-		if errNewClient != nil {
-			fmt.Println(errNewClient)
-			os.Exit(1)
+		if err != nil {
+			log.Fatalln(err)
+			return cli.NewExitError(err, 1)
 		}
 
 		return nil
