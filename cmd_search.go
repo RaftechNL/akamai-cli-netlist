@@ -17,13 +17,18 @@ func searchNetLists(c *cli.Context) error {
 
 	listNetListOptsv2 := edgegrid.ListNetworkListsOptionsv2{}
 	listNetListOptsv2.Search = c.String("searchPattern")
+	if c.String("listType") == "ANY" {
+		listNetListOptsv2.TypeOflist = ""
+	} else {
+		listNetListOptsv2.TypeOflist = c.String("listType")
+	}
 
-	netList, _, netlistErr := apiClient.NetworkListsv2.ListNetworkLists(listNetListOptsv2)
+	netListsRes, _, netlistErr := apiClient.NetworkListsv2.ListNetworkLists(listNetListOptsv2)
 	if netlistErr != nil {
 		return netlistErr
 	}
 
-	common.OutputJSON(netList)
+	common.OutputJSON(netListsRes)
 
 	return nil
 }
