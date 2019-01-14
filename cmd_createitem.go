@@ -27,7 +27,7 @@ func addItemsToNetlist(c *cli.Context) error {
 		List: itemsToAdd,
 	}
 
-	netLists, _, err := apiClient.NetworkListsv2.AppendListNetworkList(listID, editListOpts)
+	netLists, _, err := apiClient.NetworkListsv2.AppendListNetworkList(c.String("id"), editListOpts)
 
 	if err != nil {
 		return err

@@ -12,7 +12,7 @@ func cmdRemoveNetlist(c *cli.Context) error {
 func removeNetlist(c *cli.Context) error {
 	common.VerifyArgumentByName(c, "id")
 
-	netLists, _, err := apiClient.NetworkListsv2.DeleteNetworkList(listID)
+	netLists, _, err := apiClient.NetworkListsv2.DeleteNetworkList(c.String("id"))
 
 	if err != nil {
 		return err

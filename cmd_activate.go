@@ -34,7 +34,7 @@ func activateNetList(c *cli.Context) error {
 		NotificationRecipients: notificationRecipients,
 	}
 
-	netListsActivation, _, err := apiClient.NetworkListsv2.ActivateNetworkList(listID, activationEnvironment, actNetworkListOpts)
+	netListsActivation, _, err := apiClient.NetworkListsv2.ActivateNetworkList(c.String("id"), activationEnvironment, actNetworkListOpts)
 
 	if err != nil {
 		return err
