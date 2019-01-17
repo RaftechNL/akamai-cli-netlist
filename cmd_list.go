@@ -1,6 +1,8 @@
 package main
 
 import (
+	"strings"
+
 	common "github.com/apiheat/akamai-cli-common"
 	edgegrid "github.com/apiheat/go-edgegrid"
 	"github.com/urfave/cli"
@@ -29,22 +31,18 @@ func listNetLists(c *cli.Context) error {
 	// Since we are listing all we do not filter results
 	listNetListOptsv2.Search = ""
 
-	// List all IP based
-	listNetListOptsv2.TypeOflist = "IP"
-	netListsIP, _, netlistErr := apiClient.NetworkListsv2.ListNetworkLists(listNetListOptsv2)
+	if c.String("listType") == "ANY" {
+
+	} else {
+		listNetListOptsv2.TypeOflist = c.String("listType")
+	}
+
+	netListsRes, _, netlistErr := apiClient.NetworkListsv2.ListNetworkLists(listNetListOptsv2)
 	if netlistErr != nil {
 		return netlistErr
 	}
 
-	// List all GEO based
-	listNetListOptsv2.TypeOflist = "GEO"
-	netListsGEO, _, netlistErr := apiClient.NetworkListsv2.ListNetworkLists(listNetListOptsv2)
-	if netlistErr != nil {
-		return netlistErr
-	}
-
-	netListsResult := append(*netListsIP, *netListsGEO...)
-	common.OutputJSON(netListsResult)
+	common.OutputJSON(netListsRes)
 
 	return nil
 }
@@ -75,14 +73,24 @@ func listNetListbyName(c *cli.Context) error {
 	listNetListOptsv2.IncludeElements = c.Bool("includeElements")
 	listNetListOptsv2.Extended = c.Bool("extended")
 	listNetListOptsv2.Search = c.String("name")
-	listNetListOptsv2.TypeOflist = c.String("listType")
+	if c.String("listType") == "ANY" {
+		listNetListOptsv2.TypeOflist = ""
+	} else {
+		listNetListOptsv2.TypeOflist = c.String("listType")
+	}
 
 	netList, _, netlistErr := apiClient.NetworkListsv2.ListNetworkLists(listNetListOptsv2)
 	if netlistErr != nil {
 		return netlistErr
 	}
 
-	common.OutputJSON(netList)
+	// First match wins
+	for _, foundNetList := range *netList {
+		if strings.ToLower(foundNetList.Name) == strings.ToLower(c.String("name")) {
+			common.OutputJSON(foundNetList)
+			return nil
+		}
+	}
 
 	return nil
 }
