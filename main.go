@@ -135,6 +135,22 @@ func main() {
 			Action: cmdSearchNetLists,
 		},
 		{
+			Name:      "sync",
+			Usage:     "Synchronizes items from source list into destination list ( without activation )",
+			UsageText: fmt.Sprintf("%s sync-items --id-src SOURCE-LIST-ID --id-dst TARGET-LIST-ID [command options]", appName),
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:  "id-src",
+					Usage: "Source list ID to take items from",
+				},
+				cli.StringFlag{
+					Name:  "id-dst",
+					Usage: "Target list ID to which items should be added",
+				},
+			},
+			Action: cmdSyncNetListID,
+		},
+		{
 			Name:  "items",
 			Usage: "Manages items in network lists",
 			Subcommands: []cli.Command{
