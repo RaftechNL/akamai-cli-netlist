@@ -150,6 +150,12 @@ Below you may find examples on how some commands can be used together
 
 
 # Changes 
+
+## v5.0.0
+* Use account switch key
+* Improve search
+* Only one list returned when searched by name ( exact match )
+
 ## v4.0.0
 * Move to network lists API endpoint v2
 * Use go-edgegrid client v4.X.X
