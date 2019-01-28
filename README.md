@@ -79,6 +79,17 @@ flag provided but not defined: -?
 
 ```
 
+# Using account switch key
+From version 5.0.0 you can now enjoy using single credentials across all of your accounts.Please make sure the scopes are set correctly and that you have correct rights across your contracts. 
+
+```
+> akamai netlist  --account-switch-key 1123-ACS  search --searchPattern "some-Pattern_" | jq '.[] | { name, type}'
+
+> akamai netlist  --account-switch-key 1-ABC782  get by-name --name some-list-name
+
+> akamai netlist  --account-switch-key 1-8282AD  get by-name --name other_name_of_list
+```
+
 # Example commands
 Below you may find examples on how some commands can be used together 
 * get a specific network list by unique Id
