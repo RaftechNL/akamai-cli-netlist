@@ -105,8 +105,8 @@ func main() {
 						},
 						cli.StringFlag{
 							Name:  "listType",
-							Value: "ANY",
-							Usage: "filters by the network list type [ IP | GEO | ANY ]",
+							Value: "IP",
+							Usage: "filters by the network list type [ IP | GEO ]",
 						},
 					},
 					Action: cmdlistNetListName,

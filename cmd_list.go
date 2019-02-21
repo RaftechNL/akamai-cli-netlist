@@ -66,6 +66,7 @@ func listNetListbyID(c *cli.Context) error {
 }
 
 // listNetLists execute client API call to get specific network list
+// it always returns only one list - for more results use search
 func listNetListbyName(c *cli.Context) error {
 	common.VerifyArgumentByName(c, "name")
 
@@ -73,11 +74,7 @@ func listNetListbyName(c *cli.Context) error {
 	listNetListOptsv2.IncludeElements = c.Bool("includeElements")
 	listNetListOptsv2.Extended = c.Bool("extended")
 	listNetListOptsv2.Search = c.String("name")
-	if c.String("listType") == "ANY" {
-		listNetListOptsv2.TypeOflist = ""
-	} else {
-		listNetListOptsv2.TypeOflist = c.String("listType")
-	}
+	listNetListOptsv2.TypeOflist = c.String("listType")
 
 	netList, _, netlistErr := apiClient.NetworkListsv2.ListNetworkLists(listNetListOptsv2)
 	if netlistErr != nil {
