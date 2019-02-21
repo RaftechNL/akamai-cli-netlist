@@ -1,6 +1,8 @@
 package main
 
 import (
+	"errors"
+
 	common "github.com/apiheat/akamai-cli-common"
 	edgegrid "github.com/apiheat/go-edgegrid"
 	"github.com/urfave/cli"
@@ -24,18 +26,27 @@ func syncNetListbyID(c *cli.Context) error {
 		return netlistErr
 	}
 
-	// Assign the items from src list to options obj
-	syncListOpts := edgegrid.NetworkListsOptionsv2{
-		List: netListSrc.List,
+	// if we have items to sync in our source list
+	// we proceed
+	if len(netListSrc.List) > 0 {
+		// Assign the items from src list to options obj
+		syncListOpts := edgegrid.NetworkListsOptionsv2{
+			List: netListSrc.List,
+		}
+
+		// Append items from src list to dst list
+		netListDst, _, err := apiClient.NetworkListsv2.AppendListNetworkList(c.String("id-dst"), syncListOpts)
+		if err != nil {
+			return err
+		}
+
+		common.OutputJSON(netListDst)
+
 	}
 
-	// Append items from src list to dst list
-	netListDst, _, err := apiClient.NetworkListsv2.AppendListNetworkList(c.String("id-dst"), syncListOpts)
-	if err != nil {
-		return err
-	}
+	resultErr := edgegrid.NetworkListErrorv2{}
+	resultErr.Title = "Sync failed"
+	resultErr.Detail = "Source list does not contain items for sync"
 
-	common.OutputJSON(netListDst)
-
-	return nil
+	return errors.New("Source list does not have ")
 }
