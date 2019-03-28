@@ -14,8 +14,8 @@ func createNetList(c *cli.Context) error {
 	common.VerifyArgumentByName(c, "name")
 
 	newNetworkListOpst := edgegrid.NetworkListsOptionsv2{}
-	newNetworkListOpst.Description = c.String("name")
-	newNetworkListOpst.Name = c.String("description")
+	newNetworkListOpst.Description = c.String("description")
+	newNetworkListOpst.Name = c.String("name")
 	newNetworkListOpst.Type = c.String("type")
 
 	newList, _, err := apiClient.NetworkListsv2.CreateNetworkList(newNetworkListOpst)
