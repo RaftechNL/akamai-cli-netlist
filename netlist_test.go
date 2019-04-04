@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -13,220 +12,125 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// setup sets up a test HTTP server along with a edgegrid.Client that is
-// configured to talk to that test server.  Tests should register handlers on
-// mux which provide mock responses for the API method being tested.
-func setup() (*http.ServeMux, *httptest.Server, *edgegrid.Client) {
-	// mux is the HTTP request multiplexer used with the test server.
-	mux := http.NewServeMux()
-
-	// server is a test HTTP server used to provide mock API responses.
-	server := httptest.NewServer(mux)
+//setupEdgeClient prepares and inits client for making all calls towards Akamai's APIs
+func setupEdgeClient(aka, section, edgercFile, baseURL string) *edgegrid.Client {
 
 	// Provide struct details needed for apiClient init
 	apiClientOpts := &edgegrid.ClientOptions{}
-	apiClientOpts.ConfigPath = "/Users/rpieniazek/.edgerc"
-	apiClientOpts.ConfigSection = "jmb"
+	apiClientOpts.ConfigPath = edgercFile
+	apiClientOpts.ConfigSection = section
 	// apiClientOpts.DebugLevel = "debug"
-	apiClientOpts.AccountSwitchKey = ""
+	apiClientOpts.AccountSwitchKey = aka
 
 	// Initialize client for tests with init options
-	apiClient, err := common.EdgeClientInit(apiClientOpts)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	apiClient.SetBaseURL(server.URL, true)
+	apiClient, _ := common.EdgeClientInit(apiClientOpts)
+	apiClient.SetBaseURL(baseURL, true)
 
-	return mux, server, apiClient
+	return apiClient
 }
 
-// teardown closes the test HTTP server.
-func teardown(server *httptest.Server) {
-	server.Close()
-}
-
-func testURL(t *testing.T, r *http.Request, want string) {
-	if got := r.RequestURI; got != want {
-		t.Errorf("Request url: %+v, want %s", got, want)
-	}
-}
-
-func testMethod(t *testing.T, r *http.Request, want string) {
-	if got := r.Method; got != want {
-		t.Errorf("Request method: %s, want %s", got, want)
-	}
-}
-
+//TestListNetworkLists checks if listing all network lists works
 func TestListNetworkLists(t *testing.T) {
-	mux, server, client := setup()
-	defer teardown(server)
+
+	response := `{"networkLists":[{"networkListType":"networkListResponse","accessControlGroup":"KSD\nwith ION 3-13H1234","name":"General List","elementCount":3011,"syncPoint":22,"type":"IP","uniqueId":"25614_GENERALLIST","links":{"activateInProduction":{"href":"/network-list/v2/network-lists/25614_GENERALLIST/environments/PRODUCTION/activate","method":"POST"},"activateInStaging":{"href":"/network-list/v2/network-lists/25614_GENERALLIST/environments/STAGING/activate","method":"POST"},"appendItems":{"href":"/network-list/v2/network-lists/25614_GENERALLIST","method":"POST"},"retrieve":{"href":"/network-list/v2/network-lists/25614_GENERALLIST"},"statusInProduction":{"href":"/network-list/v2/network-lists/25614_GENERALLIST/environments/PRODUCTION/status"},"statusInStaging":{"href":"/network-list/v2/network-lists/25614_GENERALLIST/environments/STAGING/status"},"update":{"href":"/network-list/v2/network-lists/25614_GENERALLIST","method":"PUT"}}},{"networkListType":"networkListResponse","account":"Kona\nSecurity Engineering","accessControlGroup":"Top-Level Group: 3-12DAF123","name":"Ec2 Akamai Network List","elementCount":235,"readOnly":true,"syncPoint":65,"type":"IP","uniqueId":"1024_AMAZONELASTICCOMPUTECLOU","links":{"activateInProduction":{"href":"/network-list/v2/network-lists/1024_AMAZONELASTICCOMPUTECLOU/environments/PRODUCTION/activate","method":"POST"},"activateInStaging":{"href":"/network-list/v2/network-lists/1024_AMAZONELASTICCOMPUTECLOU/environments/STAGING/activate","method":"POST"},"appendItems":{"href":"/network-list/v2/network-lists/1024_AMAZONELASTICCOMPUTECLOU/append","method":"POST"},"retrieve":{"href":"/network-list/v2/network-lists/1024_AMAZONELASTICCOMPUTECLOU"},"statusInProduction":{"href":"/network-list/v2/network-lists/1024_AMAZONELASTICCOMPUTECLOU/environments/PRODUCTION/status"},"statusInStaging":{"href":"/network-list/v2/network-lists/1024_AMAZONELASTICCOMPUTECLOU/environments/STAGING/status"},"update":{"href":"/network-list/v2/network-lists/1024_AMAZONELASTICCOMPUTECLOU","method":"PUT"}}},{"networkListType":"networkListResponse","accessControlGroup":"KSD\nTest - 3-13H5523","name":"GeoList_1913New","elementCount":16,"syncPoint":2,"type":"GEO","uniqueId":"26732_GEOLIST1913","links":{"activateInProduction":{"href":"/network-list/v2/network-lists/26732_GEOLIST1913/environments/PRODUCTION/activate","method":"POST"},"activateInStaging":{"href":"/network-list/v2/network-lists/26732_GEOLIST1913/environments/STAGING/activate","method":"POST"},"appendItems":{"href":"/network-list/v2/network-lists/26732_GEOLIST1913/append","method":"POST"},"retrieve":{"href":"/network-list/v2/network-lists/26732_GEOLIST1913"},"statusInProduction":{"href":"/network-list/v2/network-lists/26732_GEOLIST1913/environments/PRODUCTION/status"},"statusInStaging":{"href":"/network-list/v2/network-lists/26732_GEOLIST1913/environments/STAGING/status"},"update":{"href":"/network-list/v2/network-lists/26732_GEOLIST1913","method":"PUT"}}}],"links":{"create":{"href":"/network-list/v2/network-lists/","method":"POST"}}}`
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+		body, _ := ioutil.ReadAll(r.Body)
+		assert.Equal(t, "", string(body), "Request body should be empty")
+		assert.Equal(t, "GET", r.Method, "Method should be GET")
+
+		fmt.Fprintln(w, response)
+	}))
+
+	// Init API client
+	apiClient := setupEdgeClient("", "dummy", ".edgerc-test", server.URL)
 
 	listNetListOptsv2 := edgegrid.ListNetworkListsOptionsv2{}
 	listNetListOptsv2.Search = "" // Since we are listing all we do not filter results
 
-	mux.HandleFunc("/network-list/v2/network-lists", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
+	apiResp, clientResp, reqErr := apiClient.NetworkListsv2.ListNetworkLists(listNetListOptsv2)
 
-		body, _ := ioutil.ReadAll(r.Body)
-		assert.Equal(t, "", string(body), "Request body should be empty")
-
-		fmt.Fprintf(w, `{
-			"network_lists": [
-				{
-					"name": "test",
-					"type": "IP",
-					"links": [
-						{
-							"rel": "get 123_TEST",
-							"href": "/network-list/v1/network_lists/123_TEST"
-						}
-					],
-					"unique-id": "123_TEST",
-					"list": [
-						"1.2.3.4",
-						"5.6.7.8"
-					],
-					"sync-point": 1,
-					"numEntries": 2
-				}
-			]
-		}`)
-	})
-
-	_, resp, netlistErr := client.NetworkListsv2.ListNetworkLists(listNetListOptsv2)
-	if netlistErr != nil {
-		fmt.Println(netlistErr)
+	if reqErr != nil {
+		fmt.Println(reqErr)
 	}
 
-	assert.Equal(t, 200, resp.Response.StatusCode, "Response should be 200 OK")
+	var expectedType *[]edgegrid.NetworkListv2
+
+	assert.IsType(t, expectedType, apiResp)
+	assert.Equal(t, 200, clientResp.Response.StatusCode, "Response should be 200 OK")
+
+	defer server.Close()
 }
 
+//TestGetNetworkListById checks if listing specific network list by-id works
 func TestGetNetworkListById(t *testing.T) {
-	mux, server, client := setup()
-	defer teardown(server)
+
+	response := `{"networkLists":[{"networkListType":"networkListResponse","accessControlGroup":"KSD\nwith ION 3-13H1234","name":"General List","elementCount":3011,"syncPoint":22,"type":"IP","uniqueId":"25614_GENERALLIST","links":{"activateInProduction":{"href":"/network-list/v2/network-lists/25614_GENERALLIST/environments/PRODUCTION/activate","method":"POST"},"activateInStaging":{"href":"/network-list/v2/network-lists/25614_GENERALLIST/environments/STAGING/activate","method":"POST"},"appendItems":{"href":"/network-list/v2/network-lists/25614_GENERALLIST","method":"POST"},"retrieve":{"href":"/network-list/v2/network-lists/25614_GENERALLIST"},"statusInProduction":{"href":"/network-list/v2/network-lists/25614_GENERALLIST/environments/PRODUCTION/status"},"statusInStaging":{"href":"/network-list/v2/network-lists/25614_GENERALLIST/environments/STAGING/status"},"update":{"href":"/network-list/v2/network-lists/25614_GENERALLIST","method":"PUT"}}},{"networkListType":"networkListResponse","account":"Kona\nSecurity Engineering","accessControlGroup":"Top-Level Group: 3-12DAF123","name":"Ec2 Akamai Network List","elementCount":235,"readOnly":true,"syncPoint":65,"type":"IP","uniqueId":"1024_AMAZONELASTICCOMPUTECLOU","links":{"activateInProduction":{"href":"/network-list/v2/network-lists/1024_AMAZONELASTICCOMPUTECLOU/environments/PRODUCTION/activate","method":"POST"},"activateInStaging":{"href":"/network-list/v2/network-lists/1024_AMAZONELASTICCOMPUTECLOU/environments/STAGING/activate","method":"POST"},"appendItems":{"href":"/network-list/v2/network-lists/1024_AMAZONELASTICCOMPUTECLOU/append","method":"POST"},"retrieve":{"href":"/network-list/v2/network-lists/1024_AMAZONELASTICCOMPUTECLOU"},"statusInProduction":{"href":"/network-list/v2/network-lists/1024_AMAZONELASTICCOMPUTECLOU/environments/PRODUCTION/status"},"statusInStaging":{"href":"/network-list/v2/network-lists/1024_AMAZONELASTICCOMPUTECLOU/environments/STAGING/status"},"update":{"href":"/network-list/v2/network-lists/1024_AMAZONELASTICCOMPUTECLOU","method":"PUT"}}},{"networkListType":"networkListResponse","accessControlGroup":"KSD\nTest - 3-13H5523","name":"GeoList_1913New","elementCount":16,"syncPoint":2,"type":"GEO","uniqueId":"26732_GEOLIST1913","links":{"activateInProduction":{"href":"/network-list/v2/network-lists/26732_GEOLIST1913/environments/PRODUCTION/activate","method":"POST"},"activateInStaging":{"href":"/network-list/v2/network-lists/26732_GEOLIST1913/environments/STAGING/activate","method":"POST"},"appendItems":{"href":"/network-list/v2/network-lists/26732_GEOLIST1913/append","method":"POST"},"retrieve":{"href":"/network-list/v2/network-lists/26732_GEOLIST1913"},"statusInProduction":{"href":"/network-list/v2/network-lists/26732_GEOLIST1913/environments/PRODUCTION/status"},"statusInStaging":{"href":"/network-list/v2/network-lists/26732_GEOLIST1913/environments/STAGING/status"},"update":{"href":"/network-list/v2/network-lists/26732_GEOLIST1913","method":"PUT"}}}],"links":{"create":{"href":"/network-list/v2/network-lists/","method":"POST"}}}`
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+		body, _ := ioutil.ReadAll(r.Body)
+		assert.Equal(t, "", string(body), "Request body should be empty")
+		assert.Equal(t, "GET", r.Method, "Request method should be GET")
+		assert.Contains(t, r.URL.String(), "123_TEST", "Request URL should contain list ID")
+		fmt.Fprintln(w, response)
+	}))
+
+	// Init API client
+	apiClient := setupEdgeClient("", "dummy", ".edgerc-test", server.URL)
 
 	listNetListOptsv2 := edgegrid.ListNetworkListsOptionsv2{}
 	listNetListOptsv2.Search = "" // Since we are listing all we do not filter results
 
-	mux.HandleFunc("/network-list/v2/network-lists", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
+	apiResp, clientResp, reqErr := apiClient.NetworkListsv2.GetNetworkList("123_TEST", listNetListOptsv2)
 
-		// keys, ok := r.URL.Query()["id"]
-
-		// if !ok || len(keys[0]) < 1 {
-		// 	log.Println("Url Param 'key' is missing")
-		// 	return
-		// }
-
-		body, _ := ioutil.ReadAll(r.Body)
-		assert.Equal(t, "", string(body), "Request body should be empty")
-
-		fmt.Fprintf(w, `{
-			"network_lists": [
-				{
-					"name": "test",
-					"type": "IP",
-					"links": [
-						{
-							"rel": "get 123_TEST",
-							"href": "/network-list/v1/network_lists/123_TEST"
-						}
-					],
-					"unique-id": "123_TEST",
-					"list": [
-						"1.2.3.4",
-						"5.6.7.8"
-					],
-					"sync-point": 1,
-					"numEntries": 2
-				}
-			]
-		}`)
-	})
-
-	// netList, _, netlistErr := apiClient.NetworkListsv2.
-	_, _, netlistErr := client.NetworkListsv2.GetNetworkList("123_TEST", listNetListOptsv2)
-	if netlistErr != nil {
-		fmt.Println(netlistErr)
+	if reqErr != nil {
+		fmt.Println(reqErr)
 	}
 
-	// assert.Equal(t, 200, resp.Response.StatusCode, "Response should be 200 OK")
+	var expectedType *edgegrid.NetworkListv2
+
+	assert.IsType(t, expectedType, apiResp)
+	assert.Equal(t, 200, clientResp.Response.StatusCode, "Response should be 200 OK")
+
+	defer server.Close()
 }
 
-// func TestGetNetworkList(t *testing.T) {
-// 	mux, server, client := setup()
-// 	defer teardown(server)
-
-// 	// Set options for working with network lists
-// 	opt := ListNetworkListsOptions{
-// 		TypeOflist:        "IP",
-// 		Extended:          true,
-// 		IncludeDeprecated: false,
-// 		IncludeElements:   false,
-// 	}
-
-// 	mux.HandleFunc("/network-list/v1/network_lists/345_BOTLIST", func(w http.ResponseWriter, r *http.Request) {
-// 		testMethod(t, r, "GET")
-// 		fmt.Fprintf(w, `{
-// 			"name": "single",
-// 			"type": "IP",
-// 			"unique-id": "345_BOTLIST",
-// 			"links": [
-// 				{
-// 				   "rel": "get 345_BOTLIST",
-// 				   "href": "/network-list/v1/network_lists/345_BOTLIST"
-// 				}
-// 			],
-// 			"list": [
-// 			   "192.168.0.1",
-// 			   "192.168.0.2",
-// 			   "192.168.0.3",
-// 			   "198.168.0.4",
-// 			   "198.168.0.5",
-// 			   "198.168.0.6"
-// 			],
-// 			"sync-point": 1,
-// 			"numEntries": 6
-// 		 }`)
-// 	})
-
-// 	received, resp, _ := client.NetworkLists.GetNetworkList("345_BOTLIST", opt)
-// 	assert.Equal(t, 200, resp.Response.StatusCode, "Response should be 200 OK")
-
-// 	want := &AkamaiNetworkList{
-// 		Name:     "single",
-// 		Type:     "IP",
-// 		UniqueID: "345_BOTLIST",
-// 		List: []string{
-// 			"192.168.0.1",
-// 			"192.168.0.2",
-// 			"192.168.0.3",
-// 			"198.168.0.4",
-// 			"198.168.0.5",
-// 			"198.168.0.6",
-// 		},
-// 		Links: []AkamaiNetworkListLinks{
-// 			AkamaiNetworkListLinks{
-// 				Rel:  "get 345_BOTLIST",
-// 				Href: "/network-list/v1/network_lists/345_BOTLIST",
-// 			},
-// 		},
-// 		SyncPoint:  1,
-// 		NumEntries: 6,
-// 	}
-// 	assert.Equal(t, want, received, "Response should contain valid array of network lists")
-
-// }
-
+//
 // func TestCreateNetworkList(t *testing.T) {
-// 	mux, server, client := setup()
-// 	defer teardown(server)
+
+// 	response := `{"networkLists":[{"networkListType":"networkListResponse","accessControlGroup":"KSD\nwith ION 3-13H1234","name":"General List","elementCount":3011,"syncPoint":22,"type":"IP","uniqueId":"25614_GENERALLIST","links":{"activateInProduction":{"href":"/network-list/v2/network-lists/25614_GENERALLIST/environments/PRODUCTION/activate","method":"POST"},"activateInStaging":{"href":"/network-list/v2/network-lists/25614_GENERALLIST/environments/STAGING/activate","method":"POST"},"appendItems":{"href":"/network-list/v2/network-lists/25614_GENERALLIST","method":"POST"},"retrieve":{"href":"/network-list/v2/network-lists/25614_GENERALLIST"},"statusInProduction":{"href":"/network-list/v2/network-lists/25614_GENERALLIST/environments/PRODUCTION/status"},"statusInStaging":{"href":"/network-list/v2/network-lists/25614_GENERALLIST/environments/STAGING/status"},"update":{"href":"/network-list/v2/network-lists/25614_GENERALLIST","method":"PUT"}}},{"networkListType":"networkListResponse","account":"Kona\nSecurity Engineering","accessControlGroup":"Top-Level Group: 3-12DAF123","name":"Ec2 Akamai Network List","elementCount":235,"readOnly":true,"syncPoint":65,"type":"IP","uniqueId":"1024_AMAZONELASTICCOMPUTECLOU","links":{"activateInProduction":{"href":"/network-list/v2/network-lists/1024_AMAZONELASTICCOMPUTECLOU/environments/PRODUCTION/activate","method":"POST"},"activateInStaging":{"href":"/network-list/v2/network-lists/1024_AMAZONELASTICCOMPUTECLOU/environments/STAGING/activate","method":"POST"},"appendItems":{"href":"/network-list/v2/network-lists/1024_AMAZONELASTICCOMPUTECLOU/append","method":"POST"},"retrieve":{"href":"/network-list/v2/network-lists/1024_AMAZONELASTICCOMPUTECLOU"},"statusInProduction":{"href":"/network-list/v2/network-lists/1024_AMAZONELASTICCOMPUTECLOU/environments/PRODUCTION/status"},"statusInStaging":{"href":"/network-list/v2/network-lists/1024_AMAZONELASTICCOMPUTECLOU/environments/STAGING/status"},"update":{"href":"/network-list/v2/network-lists/1024_AMAZONELASTICCOMPUTECLOU","method":"PUT"}}},{"networkListType":"networkListResponse","accessControlGroup":"KSD\nTest - 3-13H5523","name":"GeoList_1913New","elementCount":16,"syncPoint":2,"type":"GEO","uniqueId":"26732_GEOLIST1913","links":{"activateInProduction":{"href":"/network-list/v2/network-lists/26732_GEOLIST1913/environments/PRODUCTION/activate","method":"POST"},"activateInStaging":{"href":"/network-list/v2/network-lists/26732_GEOLIST1913/environments/STAGING/activate","method":"POST"},"appendItems":{"href":"/network-list/v2/network-lists/26732_GEOLIST1913/append","method":"POST"},"retrieve":{"href":"/network-list/v2/network-lists/26732_GEOLIST1913"},"statusInProduction":{"href":"/network-list/v2/network-lists/26732_GEOLIST1913/environments/PRODUCTION/status"},"statusInStaging":{"href":"/network-list/v2/network-lists/26732_GEOLIST1913/environments/STAGING/status"},"update":{"href":"/network-list/v2/network-lists/26732_GEOLIST1913","method":"PUT"}}}],"links":{"create":{"href":"/network-list/v2/network-lists/","method":"POST"}}}`
+// 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+// 		body, _ := ioutil.ReadAll(r.Body)
+// 		assert.Equal(t, "", string(body), "Request body should be empty")
+// 		assert.Equal(t, "GET", r.Method, "Request method should be GET")
+// 		assert.Contains(t, r.URL.String(), "123_TEST", "Request URL should contain list ID")
+// 		fmt.Fprintln(w, response)
+// 	}))
+
+// 	apiClient.SetBaseURL(server.URL, true)
 
 // 	opt := CreateNetworkListOptions{
-// 		Name:        "345_BOTLIST",
+// 		Name:        "testnetlist",
 // 		Type:        "IP",
 // 		Description: "created-by-test",
 // 	}
+
+// 	listNetListOptsv2 := edgegrid.ListNetworkListsOptionsv2{}
+// 	listNetListOptsv2.Search = "" // Since we are listing all we do not filter results
+
+// 	apiResp, clientResp, reqErr := apiClient.NetworkListsv2.GetNetworkList("123_TEST", listNetListOptsv2)
+
+// 	if reqErr != nil {
+// 		fmt.Println(reqErr)
+// 	}
+
+// 	var expectedType *edgegrid.NetworkListv2
+
+// 	assert.IsType(t, expectedType, apiResp)
+// 	assert.Equal(t, 200, clientResp.Response.StatusCode, "Response should be 200 OK")
+
+// 	defer server.Close()
 
 // 	mux.HandleFunc("/network-list/v1/network_lists", func(w http.ResponseWriter, r *http.Request) {
 // 		w.WriteHeader(201)
