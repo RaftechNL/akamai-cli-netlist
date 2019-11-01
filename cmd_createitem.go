@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	common "github.com/apiheat/akamai-cli-common"
-	edgegrid "github.com/apiheat/go-edgegrid"
+	service "github.com/apiheat/go-edgegrid/v6/service/netlistv2"
 	"github.com/urfave/cli"
 )
 
@@ -23,11 +23,11 @@ func addItemsToNetlist(c *cli.Context) error {
 	}
 	itemsToAdd := strings.Split(c.StringSlice("items")[0], ",")
 
-	editListOpts := edgegrid.NetworkListsOptionsv2{
+	editListOpts := service.NetworkListsOptionsv2{
 		List: itemsToAdd,
 	}
 
-	netLists, _, err := apiClient.NetworkListsv2.AppendListNetworkList(c.String("id"), editListOpts)
+	netLists, err := apiClient.AddNetworkListElement(c.String("id"), editListOpts)
 
 	if err != nil {
 		return err

@@ -4,7 +4,7 @@ import (
 	"strings"
 
 	common "github.com/apiheat/akamai-cli-common"
-	edgegrid "github.com/apiheat/go-edgegrid"
+	service "github.com/apiheat/go-edgegrid/v6/service/netlistv2"
 	"github.com/urfave/cli"
 )
 
@@ -26,7 +26,7 @@ func cmdlistNetListName(c *cli.Context) error {
 // listNetLists execute client API call to get all network lists
 func listNetLists(c *cli.Context) error {
 
-	listNetListOptsv2 := edgegrid.ListNetworkListsOptionsv2{}
+	listNetListOptsv2 := service.ListNetworkListsOptionsv2{}
 
 	// Since we are listing all we do not filter results
 	listNetListOptsv2.Search = ""
@@ -37,7 +37,7 @@ func listNetLists(c *cli.Context) error {
 		listNetListOptsv2.TypeOflist = c.String("listType")
 	}
 
-	netListsRes, _, netlistErr := apiClient.NetworkListsv2.ListNetworkLists(listNetListOptsv2)
+	netListsRes, netlistErr := apiClient.ListNetworkLists(listNetListOptsv2)
 	if netlistErr != nil {
 		return netlistErr
 	}
@@ -51,11 +51,11 @@ func listNetLists(c *cli.Context) error {
 func listNetListbyID(c *cli.Context) error {
 	common.VerifyArgumentByName(c, "id")
 
-	listNetListOptsv2 := edgegrid.ListNetworkListsOptionsv2{}
+	listNetListOptsv2 := service.ListNetworkListsOptionsv2{}
 	listNetListOptsv2.IncludeElements = c.Bool("includeElements")
 	listNetListOptsv2.Extended = c.Bool("extended")
 
-	netList, _, netlistErr := apiClient.NetworkListsv2.GetNetworkList(c.String("id"), listNetListOptsv2)
+	netList, netlistErr := apiClient.GetNetworkList(c.String("id"), listNetListOptsv2)
 	if netlistErr != nil {
 		return netlistErr
 	}
@@ -70,19 +70,19 @@ func listNetListbyID(c *cli.Context) error {
 func listNetListbyName(c *cli.Context) error {
 	common.VerifyArgumentByName(c, "name")
 
-	listNetListOptsv2 := edgegrid.ListNetworkListsOptionsv2{}
+	listNetListOptsv2 := service.ListNetworkListsOptionsv2{}
 	listNetListOptsv2.IncludeElements = c.Bool("includeElements")
 	listNetListOptsv2.Extended = c.Bool("extended")
 	listNetListOptsv2.Search = c.String("name")
 	listNetListOptsv2.TypeOflist = c.String("listType")
 
-	netList, _, netlistErr := apiClient.NetworkListsv2.ListNetworkLists(listNetListOptsv2)
+	netList, netlistErr := apiClient.ListNetworkLists(listNetListOptsv2)
 	if netlistErr != nil {
 		return netlistErr
 	}
 
 	// First match wins
-	for _, foundNetList := range *netList {
+	for _, foundNetList := range netList.NetworkLists {
 		if strings.ToLower(foundNetList.Name) == strings.ToLower(c.String("name")) {
 			common.OutputJSON(foundNetList)
 			return nil

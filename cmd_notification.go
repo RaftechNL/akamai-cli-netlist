@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	common "github.com/apiheat/akamai-cli-common"
-	edgegrid "github.com/apiheat/go-edgegrid"
+	service "github.com/apiheat/go-edgegrid/v6/service/netlistv2"
 	"github.com/urfave/cli"
 )
 
@@ -35,17 +35,17 @@ func notificationManagement(c *cli.Context) error {
 	}
 	networkListsIDs := strings.Split(c.StringSlice("networkListsIDs")[0], ",")
 
-	networkListSubscription := edgegrid.NetworkListSubscription{
+	networkListSubscription := service.NetworkListSubscription{
 		Recipients: notificationRecipients,
 		UniqueIds:  networkListsIDs,
 	}
 
-	notificationAction := edgegrid.Subscribe
+	notificationAction := service.Subscribe
 	if c.Bool("unsubscribe") {
-		notificationAction = edgegrid.Unsubscribe
+		notificationAction = service.Unsubscribe
 	}
 
-	_, netlistErr := apiClient.NetworkListsv2.NetworkListNotification(notificationAction, networkListSubscription)
+	netlistErr := apiClient.NetworkListNotification(notificationAction, networkListSubscription)
 	if netlistErr != nil {
 		return netlistErr
 	}

@@ -2,7 +2,7 @@ package main
 
 import (
 	common "github.com/apiheat/akamai-cli-common"
-	edgegrid "github.com/apiheat/go-edgegrid"
+	service "github.com/apiheat/go-edgegrid/v6/service/netlistv2"
 	"github.com/urfave/cli"
 )
 
@@ -15,7 +15,7 @@ func cmdSearchNetLists(c *cli.Context) error {
 func searchNetLists(c *cli.Context) error {
 	common.VerifyArgumentByName(c, "searchPattern")
 
-	listNetListOptsv2 := edgegrid.ListNetworkListsOptionsv2{}
+	listNetListOptsv2 := service.ListNetworkListsOptionsv2{}
 	listNetListOptsv2.Search = c.String("searchPattern")
 	if c.String("listType") == "ANY" {
 		listNetListOptsv2.TypeOflist = ""
@@ -23,7 +23,7 @@ func searchNetLists(c *cli.Context) error {
 		listNetListOptsv2.TypeOflist = c.String("listType")
 	}
 
-	netListsRes, _, netlistErr := apiClient.NetworkListsv2.ListNetworkLists(listNetListOptsv2)
+	netListsRes, netlistErr := apiClient.ListNetworkLists(listNetListOptsv2)
 	if netlistErr != nil {
 		return netlistErr
 	}

@@ -4,7 +4,7 @@ import (
 	"errors"
 
 	common "github.com/apiheat/akamai-cli-common"
-	edgegrid "github.com/apiheat/go-edgegrid"
+	service "github.com/apiheat/go-edgegrid/v6/service/netlistv2"
 	"github.com/urfave/cli"
 )
 
@@ -18,10 +18,10 @@ func syncNetListbyID(c *cli.Context) error {
 	common.VerifyArgumentByName(c, "id-src")
 	common.VerifyArgumentByName(c, "id-dst")
 
-	listNetListOptsv2 := edgegrid.ListNetworkListsOptionsv2{}
+	listNetListOptsv2 := service.ListNetworkListsOptionsv2{}
 	listNetListOptsv2.IncludeElements = true
 
-	netListSrc, _, netlistErr := apiClient.NetworkListsv2.GetNetworkList(c.String("id-src"), listNetListOptsv2)
+	netListSrc, netlistErr := apiClient.GetNetworkList(c.String("id-src"), listNetListOptsv2)
 	if netlistErr != nil {
 		return netlistErr
 	}
@@ -30,12 +30,12 @@ func syncNetListbyID(c *cli.Context) error {
 	// we proceed
 	if len(netListSrc.List) > 0 {
 		// Assign the items from src list to options obj
-		syncListOpts := edgegrid.NetworkListsOptionsv2{
+		syncListOpts := service.NetworkListsOptionsv2{
 			List: netListSrc.List,
 		}
 
 		// Append items from src list to dst list
-		netListDst, _, err := apiClient.NetworkListsv2.AppendListNetworkList(c.String("id-dst"), syncListOpts)
+		netListDst, err := apiClient.AddNetworkListElement(c.String("id-dst"), syncListOpts)
 		if err != nil {
 			return err
 		}
@@ -44,7 +44,7 @@ func syncNetListbyID(c *cli.Context) error {
 
 	}
 
-	resultErr := edgegrid.NetworkListErrorv2{}
+	resultErr := service.NetworkListErrorv2{}
 	resultErr.Title = "Sync failed"
 	resultErr.Detail = "Source list does not contain items for sync"
 
