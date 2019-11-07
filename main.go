@@ -165,6 +165,10 @@ func main() {
 							Name:  "items",
 							Usage: "items to be included",
 						},
+						cli.StringSliceFlag{
+							Name:  "from-file",
+							Usage: "items to be included from file",
+						},
 					},
 					Action: cmdAddItemsToNetlist,
 				},
