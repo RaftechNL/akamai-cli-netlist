@@ -133,20 +133,42 @@ func main() {
 			Action: cmdSearchNetLists,
 		},
 		{
-			Name:      "sync",
-			Usage:     "Synchronizes items from source list into destination list ( without activation )",
-			UsageText: fmt.Sprintf("%s sync-items --id-src SOURCE-LIST-ID --id-dst TARGET-LIST-ID [command options]", appName),
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "id-src",
-					Usage: "Source list ID to take items from",
+			Name:  "sync",
+			Usage: "Synchronizes items from source list into destination list ( without activation )",
+			Subcommands: []cli.Command{
+				{
+					Name:      "aka", //TODO: Name of this command might be changed *** BETA ***
+					Usage:     "Synchronizes items from source list into destination list in Akamai",
+					UsageText: fmt.Sprintf("%s sync-items --id-src SOURCE-LIST-ID --id-dst TARGET-LIST-ID [command options]", appName),
+					Flags: []cli.Flag{
+						cli.StringFlag{
+							Name:  "id-src",
+							Usage: "Source list ID to take items from",
+						},
+						cli.StringFlag{
+							Name:  "id-dst",
+							Usage: "Target list ID to which items should be added",
+						},
+					},
+					Action: cmdSyncNetListID,
 				},
-				cli.StringFlag{
-					Name:  "id-dst",
-					Usage: "Target list ID to which items should be added",
+				{
+					Name:      "local", //TODO: Name of this command might be changed *** BETA ***
+					Usage:     "Synchronizes items from local file into destination list in Akamai",
+					UsageText: fmt.Sprintf("%s sync-items --from-file PATH-TO-FILE --id-dst TARGET-LIST-ID [command options]", appName),
+					Flags: []cli.Flag{
+						cli.StringFlag{
+							Name:  "from-file",
+							Usage: "Source list ID to take items from",
+						},
+						cli.StringFlag{
+							Name:  "id-dst",
+							Usage: "Target list ID to which items should be added",
+						},
+					},
+					Action: cmdSyncNetListID,
 				},
 			},
-			Action: cmdSyncNetListID,
 		},
 		{
 			Name:  "items",
