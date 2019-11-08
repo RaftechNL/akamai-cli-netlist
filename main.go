@@ -157,7 +157,7 @@ func main() {
 					Usage:     "Synchronizes items from local file into destination list in Akamai",
 					UsageText: fmt.Sprintf("%s sync-items --from-file PATH-TO-FILE --id-dst TARGET-LIST-ID [command options]", appName),
 					Flags: []cli.Flag{
-						cli.StringFlag{
+						cli.StringSliceFlag{
 							Name:  "from-file",
 							Usage: "Source list ID to take items from",
 						},
@@ -166,7 +166,7 @@ func main() {
 							Usage: "Target list ID to which items should be added",
 						},
 					},
-					Action: cmdSyncNetListID,
+					Action: cmdsyncNetListWithFile,
 				},
 			},
 		},
