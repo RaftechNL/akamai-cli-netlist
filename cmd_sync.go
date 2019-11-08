@@ -50,3 +50,8 @@ func syncNetListbyID(c *cli.Context) error {
 
 	return errors.New("Source list does not have ")
 }
+
+// syncNetListWithFile synchronizes item from src list to destination list
+func syncNetListWithFile(c *cli.Context) error {
+	return nil
+}
