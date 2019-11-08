@@ -6,14 +6,14 @@ import (
 	"sort"
 
 	common "github.com/apiheat/akamai-cli-common"
-	edgegrid "github.com/apiheat/go-edgegrid"
-	log "github.com/sirupsen/logrus"
+	edgegrid "github.com/apiheat/go-edgegrid/v6/edgegrid"
+	service "github.com/apiheat/go-edgegrid/v6/service/netlistv2"
 
 	"github.com/urfave/cli"
 )
 
 var (
-	apiClient       *edgegrid.Client
+	apiClient       *service.Netlistv2
 	appVer, appName string
 )
 
@@ -21,21 +21,19 @@ func main() {
 	app := common.CreateNewApp(appName, "A CLI to interact with Akamai network lists", appVer)
 	app.Flags = common.CreateFlags()
 	app.Before = func(c *cli.Context) error {
-		var err error
+
+		creds := edgegrid.NewCredentials().AutoLoad(c.GlobalString("section"))
+		config := edgegrid.NewConfig().
+			WithCredentials(creds).
+			WithLogVerbosity(c.GlobalString("debug")).
+			WithAccountSwitchKey(c.GlobalString("ask"))
+
+		if c.GlobalString("debug") == "debug" {
+			config = config.WithRequestDebug(true)
+		}
 
 		// Provide struct details needed for apiClient init
-		apiClientOpts := &edgegrid.ClientOptions{}
-		apiClientOpts.ConfigPath = c.GlobalString("config")
-		apiClientOpts.ConfigSection = c.GlobalString("section")
-		apiClientOpts.DebugLevel = c.GlobalString("debug")
-		apiClientOpts.AccountSwitchKey = c.GlobalString("ask")
-
-		apiClient, err = common.EdgeClientInit(apiClientOpts)
-
-		if err != nil {
-			log.Fatalln(err)
-			return cli.NewExitError(err, 1)
-		}
+		apiClient = service.New(config)
 
 		return nil
 	}
@@ -166,6 +164,10 @@ func main() {
 						cli.StringSliceFlag{
 							Name:  "items",
 							Usage: "items to be included",
+						},
+						cli.StringSliceFlag{
+							Name:  "from-file",
+							Usage: "items to be included from file",
 						},
 					},
 					Action: cmdAddItemsToNetlist,
@@ -300,7 +302,6 @@ func main() {
 	sort.Sort(cli.CommandsByName(app.Commands))
 
 	app.Action = func(c *cli.Context) error {
-
 		return nil
 	}
 

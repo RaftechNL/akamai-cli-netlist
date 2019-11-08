@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	common "github.com/apiheat/akamai-cli-common"
-	edgegrid "github.com/apiheat/go-edgegrid"
+	service "github.com/apiheat/go-edgegrid/v6/service/netlistv2"
 	"github.com/urfave/cli"
 )
 
@@ -16,10 +16,10 @@ func cmdActivateNetList(c *cli.Context) error {
 func activateNetList(c *cli.Context) error {
 	common.VerifyArgumentByName(c, "id")
 
-	activationEnvironment := edgegrid.Staging
+	activationEnvironment := service.Staging
 
 	if c.Bool("prd") {
-		activationEnvironment = edgegrid.Production
+		activationEnvironment = service.Production
 	}
 
 	if len(c.StringSlice("notificationRecipients")) < 1 {
@@ -28,13 +28,13 @@ func activateNetList(c *cli.Context) error {
 	}
 	notificationRecipients := strings.Split(c.StringSlice("notificationRecipients")[0], ",")
 
-	actNetworkListOpts := edgegrid.NetworkListActivationOptsv2{
-		Comments: "",
-		Fast:     c.Bool("fast"),
+	actNetworkListOpts := service.NetworkListActivationOptsv2{
+		Comments:               "",
+		Fast:                   c.Bool("fast"),
 		NotificationRecipients: notificationRecipients,
 	}
 
-	netListsActivation, _, err := apiClient.NetworkListsv2.ActivateNetworkList(c.String("id"), activationEnvironment, actNetworkListOpts)
+	netListsActivation, err := apiClient.ActivateNetworkList(c.String("id"), activationEnvironment, actNetworkListOpts)
 
 	if err != nil {
 		return err

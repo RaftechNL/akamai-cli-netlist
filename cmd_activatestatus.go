@@ -2,7 +2,7 @@ package main
 
 import (
 	common "github.com/apiheat/akamai-cli-common"
-	edgegrid "github.com/apiheat/go-edgegrid"
+	service "github.com/apiheat/go-edgegrid/v6/service/netlistv2"
 	"github.com/urfave/cli"
 )
 
@@ -13,13 +13,13 @@ func cmdActivateNetListStatus(c *cli.Context) error {
 func activateNetListStatus(c *cli.Context) error {
 	common.VerifyArgumentByName(c, "id")
 
-	activationEnvironment := edgegrid.Staging
+	activationEnvironment := service.Staging
 
 	if c.Bool("prd") {
-		activationEnvironment = edgegrid.Production
+		activationEnvironment = service.Production
 	}
 
-	netListsActivationStatus, _, err := apiClient.NetworkListsv2.GetNetworkListActStatus(c.String("id"), activationEnvironment)
+	netListsActivationStatus, err := apiClient.GetActivationStatus(c.String("id"), activationEnvironment)
 
 	if err != nil {
 		return err
