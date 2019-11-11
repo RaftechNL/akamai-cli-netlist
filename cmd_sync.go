@@ -60,41 +60,60 @@ func syncNetListbyID(c *cli.Context) error {
 
 // syncNetListWithFile synchronizes item from src list to destination list
 func syncNetListWithFile(c *cli.Context) error {
-	var itemsToAdd []string
-
+	common.VerifyArgumentByName(c, "from-file")
 	common.VerifyArgumentByName(c, "id-dst")
 
-	//TODO: We do not have common way of checking slices for specific length etc.
-	if len(c.StringSlice("from-file")) < 1 {
-		log.Fatal("Please provide file!")
-	}
-
-	//TODO: This is the way we access first of the params in CLI - check if we can do it cleaner
-	path := c.StringSlice("from-file")[0]
-
-	IPAddresses, err := readLinesFromFile(path)
+	sourceIPs, err := readLinesFromFile(c.String("from-file"))
 	if err != nil {
-		fmt.Println(err)
-		return err
+		log.Fatal(err)
 	}
 
-	// Iterate over our list and add it to array - removing any empty entries
-	//TODO: For sanity - we might wanna introduce regex for IP/CIDR
-	for _, singleIPAddress := range IPAddresses {
-		if singleIPAddress != "" {
-			itemsToAdd = append(itemsToAdd, singleIPAddress)
+	//get the items from destination list
+	listNetListOptsv2 := service.ListNetworkListsOptionsv2{}
+	listNetListOptsv2.IncludeElements = true
+
+	netListDst, netlistErr := apiClient.GetNetworkList(c.String("id-dst"), listNetListOptsv2)
+	if netlistErr != nil {
+		return netlistErr
+	}
+
+	//What is present in Local file and not in Akamai
+	diffAdd := stringsSlicesDifference(sourceIPs, netListDst.List)
+	log.Printf("In local file but not in akamai .... %v", diffAdd)
+
+	//What is present in Akamai and not in local list - we get the diff
+	diffRemove := stringsSlicesDifference(netListDst.List, sourceIPs)
+
+	//Safe check we will not remove all ips we have
+	if len(diffRemove) > 0 && !c.Bool("force") {
+		log.Fatalf("Some IPs are present in Akamai, but not in file. %v. Use `--force` to enable removing", diffRemove)
+	}
+
+	//Iterate and remove the values which are not present in file
+	for _, IPForRemoval := range diffRemove {
+		log.Println("Removing.... " + IPForRemoval)
+		_, err := apiClient.RemoveNetworkListElement(c.String("id-dst"), IPForRemoval)
+		if err != nil {
+			log.Fatal(err)
 		}
 	}
 
-	// Assign the items from src list to options obj
-	syncListOpts := service.NetworkListsOptionsv2{
-		List: itemsToAdd,
+	//if there is nothing to add - bail out...
+	if len(diffAdd) == 0 {
+		return nil
 	}
 
+	//Add entire set from the file to the change
+	syncListOpts := service.NetworkListsOptionsv2{
+		List: sourceIPs,
+	}
+
+	log.Println(fmt.Sprintf("Adding to the list... %v", sourceIPs))
+
 	// Append items from src list to dst list
-	netListDst, err := apiClient.AddNetworkListElement(c.String("id-dst"), syncListOpts)
-	if err != nil {
-		return err
+	netListDst, errAdd := apiClient.AddNetworkListElement(c.String("id-dst"), syncListOpts)
+	if errAdd != nil {
+		log.Fatal(errAdd)
 	}
 
 	common.OutputJSON(netListDst)
