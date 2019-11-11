@@ -149,6 +149,10 @@ func main() {
 							Name:  "id-dst",
 							Usage: "Target list ID to which items should be added",
 						},
+						cli.BoolFlag{
+							Name:  "force",
+							Usage: "Enables removal of addresses from Akamai network",
+						},
 					},
 					Action: cmdSyncNetListID,
 				},
@@ -157,13 +161,17 @@ func main() {
 					Usage:     "Synchronizes items from local file into destination list in Akamai",
 					UsageText: fmt.Sprintf("%s sync-items --from-file PATH-TO-FILE --id-dst TARGET-LIST-ID [command options]", appName),
 					Flags: []cli.Flag{
-						cli.StringSliceFlag{
+						cli.StringFlag{
 							Name:  "from-file",
 							Usage: "Source list ID to take items from",
 						},
 						cli.StringFlag{
 							Name:  "id-dst",
 							Usage: "Target list ID to which items should be added",
+						},
+						cli.BoolFlag{
+							Name:  "force",
+							Usage: "Enables removal of addresses from Akamai network",
 						},
 					},
 					Action: cmdsyncNetListWithFile,
