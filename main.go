@@ -183,11 +183,11 @@ func main() {
 							Name:  "id",
 							Usage: "list unique-id",
 						},
-						cli.StringSliceFlag{
+						cli.StringFlag{
 							Name:  "items",
 							Usage: "items to be included",
 						},
-						cli.StringSliceFlag{
+						cli.StringFlag{
 							Name:  "from-file",
 							Usage: "items to be included from file",
 						},

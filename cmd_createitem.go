@@ -20,31 +20,23 @@ func addItemsToNetlist(c *cli.Context) error {
 
 	common.VerifyArgumentByName(c, "id")
 
-	if len(c.StringSlice("from-file")) < 1 {
+	//We are not using from-file so we need to validate arguments
+	if c.String("from-file") == "" {
 		common.VerifyArgumentByName(c, "items")
 
-		if len(c.StringSlice("items")) < 1 {
-			log.Fatal("Please provide items!")
-
-		}
-
 		//Add out items to slice
-		itemsToAdd = strings.Split(c.StringSlice("items")[0], ",")
+		itemsToAdd = strings.Split(c.String("items"), ",")
 
 	} else {
-		//TODO: This is the way we access first of the params in CLI - check if we can do it cleaner
-		path := c.StringSlice("from-file")[0]
+		var errReadFile error
 
-		lineItems, err := readLinesFromFile(path)
-		if err != nil {
-			fmt.Println(err)
+		path := c.String("from-file")
+
+		itemsToAdd, errReadFile = readLinesFromFile(path)
+		if errReadFile != nil {
+			log.Fatal(errReadFile)
 		}
 
-		for _, singleIPAddress := range lineItems {
-			if singleIPAddress != "" {
-				itemsToAdd = append(itemsToAdd, singleIPAddress)
-			}
-		}
 	}
 
 	editListOpts := service.NetworkListsOptionsv2{
@@ -54,6 +46,7 @@ func addItemsToNetlist(c *cli.Context) error {
 	netLists, err := apiClient.AddNetworkListElement(c.String("id"), editListOpts)
 
 	if err != nil {
+		fmt.Println(err)
 		return err
 	}
 
