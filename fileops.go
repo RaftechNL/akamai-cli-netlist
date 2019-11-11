@@ -9,6 +9,7 @@ import (
 // readLinesFromFile reads a whole file into memory
 // and returns a slice of its lines.
 func readLinesFromFile(path string) ([]string, error) {
+	var itemsToAdd []string
 
 	file, err := os.OpenFile(path, os.O_RDONLY, os.ModeAppend)
 	if err != nil {
@@ -26,5 +27,13 @@ func readLinesFromFile(path string) ([]string, error) {
 	for scanner.Scan() {
 		lines = append(lines, scanner.Text())
 	}
-	return lines, scanner.Err()
+
+	//Removes empty lines from our array
+	for _, singleLine := range lines {
+		if singleLine != "" {
+			itemsToAdd = append(itemsToAdd, singleLine)
+		}
+	}
+
+	return itemsToAdd, scanner.Err()
 }
