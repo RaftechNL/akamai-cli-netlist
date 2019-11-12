@@ -22,7 +22,13 @@ func main() {
 	app.Flags = common.CreateFlags()
 	app.Before = func(c *cli.Context) error {
 
-		creds := edgegrid.NewCredentials().AutoLoad(c.GlobalString("section"))
+		var creds *edgegrid.Credentials
+
+		// Check if were succesfull in loading credentials automatically - if not - try to load from alternative location
+		creds = edgegrid.NewCredentials().AutoLoad(c.GlobalString("section"))
+		if creds == nil {
+			creds, _ = edgegrid.NewCredentials().FromFile(c.GlobalString("config")).Section(c.GlobalString("section"))
+		}
 		config := edgegrid.NewConfig().
 			WithCredentials(creds).
 			WithLogVerbosity(c.GlobalString("debug")).
