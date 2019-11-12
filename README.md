@@ -19,7 +19,7 @@ CLI uses custom [Akamai API client](https://github.com/apiheat/go-edgegrid)
          * [Getting a network list](#getting-a-network-list)
          * [Searching](#searching)
          * [Removing elements](#removing-elements)
-         * [Creating netowork list](#creating-netowork-list)
+         * [Creating network list](#creating-network-list)
          * [Adding elements](#adding-elements)
          * [Synchronize list](#synchronize-list)
          * [Subscribe for notifications](#subscribe-for-notifications)
@@ -115,7 +115,7 @@ You can search through network list based on name or elements which list include
    akamai netlist items remove --id 1234_UNIQID --element 1.2.3.4
    ```
 
-### Creating netowork list
+### Creating network list
 * Create new network list
    ```
    akamai netlist create list --name whitelist_placeholder
