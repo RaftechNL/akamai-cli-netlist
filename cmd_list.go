@@ -27,6 +27,8 @@ func cmdlistNetListName(c *cli.Context) error {
 func listNetLists(c *cli.Context) error {
 
 	listNetListOptsv2 := service.ListNetworkListsOptionsv2{}
+	listNetListOptsv2.IncludeElements = c.Bool("includeElements")
+	listNetListOptsv2.Extended = c.Bool("extended")
 
 	// Since we are listing all we do not filter results
 	listNetListOptsv2.Search = ""
