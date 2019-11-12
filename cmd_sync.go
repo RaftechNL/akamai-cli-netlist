@@ -1,8 +1,6 @@
 package main
 
 import (
-	"errors"
-	"fmt"
 	"log"
 
 	common "github.com/apiheat/akamai-cli-common"
@@ -25,37 +23,15 @@ func syncNetListbyID(c *cli.Context) error {
 	common.VerifyArgumentByName(c, "id-src")
 	common.VerifyArgumentByName(c, "id-dst")
 
-	listNetListOptsv2 := service.ListNetworkListsOptionsv2{}
-	listNetListOptsv2.IncludeElements = true
+	synchronize(c.String("id-src"), c.String("id-dst"), false, c.Bool("force"))
 
-	netListSrc, netlistErr := apiClient.GetNetworkList(c.String("id-src"), listNetListOptsv2)
-	if netlistErr != nil {
-		return netlistErr
-	}
+	// resultErr := service.NetworkListErrorv2{}
+	// resultErr.Title = "Sync failed"
+	// resultErr.Detail = "Source list does not contain items for sync"
 
-	// if we have items to sync in our source list
-	// we proceed
-	if len(netListSrc.List) > 0 {
-		// Assign the items from src list to options obj
-		syncListOpts := service.NetworkListsOptionsv2{
-			List: netListSrc.List,
-		}
+	// return errors.New("Source list does not have ")
 
-		// Append items from src list to dst list
-		netListDst, err := apiClient.AddNetworkListElement(c.String("id-dst"), syncListOpts)
-		if err != nil {
-			return err
-		}
-
-		common.OutputJSON(netListDst)
-
-	}
-
-	resultErr := service.NetworkListErrorv2{}
-	resultErr.Title = "Sync failed"
-	resultErr.Detail = "Source list does not contain items for sync"
-
-	return errors.New("Source list does not have ")
+	return nil
 }
 
 // syncNetListWithFile synchronizes item from src list to destination list
@@ -63,36 +39,56 @@ func syncNetListWithFile(c *cli.Context) error {
 	common.VerifyArgumentByName(c, "from-file")
 	common.VerifyArgumentByName(c, "id-dst")
 
-	sourceIPs, err := readLinesFromFile(c.String("from-file"))
-	if err != nil {
-		log.Fatal(err)
-	}
+	synchronize(c.String("from-file"), c.String("id-dst"), true, c.Bool("force"))
 
-	//get the items from destination list
+	return nil
+}
+
+//synchronize is used to synchronize between 2 sources of IPs. If used with force option it will
+//also perform removal of addresses from the target.
+func synchronize(source, destination string, fromFile, force bool) {
+	var ipsFromSource []string
+
 	listNetListOptsv2 := service.ListNetworkListsOptionsv2{}
 	listNetListOptsv2.IncludeElements = true
 
-	netListDst, netlistErr := apiClient.GetNetworkList(c.String("id-dst"), listNetListOptsv2)
-	if netlistErr != nil {
-		return netlistErr
+	if fromFile {
+		// Get source IPs from file in local system
+		sourceIPs, err := readLinesFromFile(source)
+		if err != nil {
+			log.Fatal(err)
+		}
+		ipsFromSource = sourceIPs
+
+	} else {
+		// Get source IPs from list in Akamai
+		netListSrc, netlistErr := apiClient.GetNetworkList(source, listNetListOptsv2)
+		if netlistErr != nil {
+			log.Fatalln(netlistErr)
+		}
+		ipsFromSource = netListSrc.List
 	}
 
-	//What is present in Local file and not in Akamai
-	diffAdd := stringsSlicesDifference(sourceIPs, netListDst.List)
-	log.Printf("In local file but not in akamai .... %v", diffAdd)
+	// Get the destination list
+	netListDst, netlistErr := apiClient.GetNetworkList(destination, listNetListOptsv2)
+	if netlistErr != nil {
+		log.Fatalln(netlistErr)
+	}
 
-	//What is present in Akamai and not in local list - we get the diff
-	diffRemove := stringsSlicesDifference(netListDst.List, sourceIPs)
+	//What is present in source list and not in destination
+	diffAdd := stringsSlicesDifference(ipsFromSource, netListDst.List)
+
+	//What is present in destination list and not in source
+	diffRemove := stringsSlicesDifference(netListDst.List, ipsFromSource)
 
 	//Safe check we will not remove all ips we have
-	if len(diffRemove) > 0 && !c.Bool("force") {
-		log.Fatalf("Some IPs are present in Akamai, but not in file. %v. Use `--force` to enable removing", diffRemove)
+	if len(diffRemove) > 0 && !force {
+		log.Fatalf("Some IPs are present in target, but not in source. %v. Use `--force` to enable removing", diffRemove)
 	}
 
 	//Iterate and remove the values which are not present in file
 	for _, IPForRemoval := range diffRemove {
-		log.Println("Removing.... " + IPForRemoval)
-		_, err := apiClient.RemoveNetworkListElement(c.String("id-dst"), IPForRemoval)
+		_, err := apiClient.RemoveNetworkListElement(destination, IPForRemoval)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -100,23 +96,21 @@ func syncNetListWithFile(c *cli.Context) error {
 
 	//if there is nothing to add - bail out...
 	if len(diffAdd) == 0 {
-		return nil
+		return
 	}
 
 	//Add entire set from the file to the change
 	syncListOpts := service.NetworkListsOptionsv2{
-		List: sourceIPs,
+		List: ipsFromSource,
 	}
 
-	log.Println(fmt.Sprintf("Adding to the list... %v", sourceIPs))
-
 	// Append items from src list to dst list
-	netListDst, errAdd := apiClient.AddNetworkListElement(c.String("id-dst"), syncListOpts)
+	netListDst, errAdd := apiClient.AddNetworkListElement(destination, syncListOpts)
 	if errAdd != nil {
 		log.Fatal(errAdd)
 	}
 
 	common.OutputJSON(netListDst)
 
-	return nil
+	return
 }
