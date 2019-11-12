@@ -68,21 +68,6 @@ The tool can be used as completly standalone binary or in conjuction with akamai
 ### Standalone
 As part of automated releases/builds you can download latest version from the project release page
 
-
-
-COMMANDS:
-     activate      Manages network list activation/status
-     create        Creates new network list
-     delete        Deletes network list ( ** REQUIRES LIST TO BE DEACTIVATED ON BOTH NETWORKS ** )
-     get           List network lists objects
-     items         Manages items in network lists
-     notification  Manages network list subscription notifications ( SUBSCRIBE by default )
-     search        Finds all network lists that match specific expression ( either name or network element )
-     help, h       Shows a list of commands or help for one command
-
-
-
-
 # Usage
 ## Account switch key (ask)
 From version 5.0.0 you can now enjoy using single credentials across all of your accounts.Please make sure the scopes are set correctly and that you have correct rights across your contracts.
