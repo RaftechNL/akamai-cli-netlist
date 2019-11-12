@@ -1,10 +1,9 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"log"
-	"os"
+	"strings"
 
 	common "github.com/apiheat/akamai-cli-common"
 	service "github.com/apiheat/go-edgegrid/v6/service/netlistv2"
@@ -21,30 +20,24 @@ func addItemsToNetlist(c *cli.Context) error {
 
 	common.VerifyArgumentByName(c, "id")
 
+	//We are not using from-file so we need to validate arguments
 	if c.String("from-file") == "" {
 		common.VerifyArgumentByName(c, "items")
 
-		if len(c.StringSlice("items")) < 1 {
-			log.Fatal("Please provide items!")
+		//Add out items to slice
+		itemsToAdd = strings.Split(c.String("items"), ",")
 
-		}
 	} else {
-		// This is the way we access first of the params in CLI
-		path := c.StringSlice("from-file")[0]
+		var errReadFile error
 
-		lineItems, err := readLinesFromFile(path)
-		if err != nil {
-			fmt.Println(err)
+		path := c.String("from-file")
+
+		itemsToAdd, errReadFile = readLinesFromFile(path)
+		if errReadFile != nil {
+			log.Fatal(errReadFile)
 		}
 
-		for _, singleIPAddress := range lineItems {
-			if singleIPAddress != "" {
-				itemsToAdd = append(itemsToAdd, singleIPAddress)
-			}
-		}
 	}
-
-	//itemsToAdd := strings.Split(c.StringSlice("items")[0], ",")
 
 	editListOpts := service.NetworkListsOptionsv2{
 		List: itemsToAdd,
@@ -53,6 +46,7 @@ func addItemsToNetlist(c *cli.Context) error {
 	netLists, err := apiClient.AddNetworkListElement(c.String("id"), editListOpts)
 
 	if err != nil {
+		fmt.Println(err)
 		return err
 	}
 
@@ -60,27 +54,4 @@ func addItemsToNetlist(c *cli.Context) error {
 
 	return nil
 
-}
-
-// readLinesFromFile reads a whole file into memory
-// and returns a slice of its lines.
-func readLinesFromFile(path string) ([]string, error) {
-
-	file, err := os.OpenFile(path, os.O_RDONLY, os.ModeAppend)
-	if err != nil {
-		if os.IsNotExist(err) {
-			fmt.Print("File Does Not Exist: ")
-		}
-		fmt.Println(err)
-		return nil, err
-	}
-
-	defer file.Close()
-
-	var lines []string
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		lines = append(lines, scanner.Text())
-	}
-	return lines, scanner.Err()
 }
