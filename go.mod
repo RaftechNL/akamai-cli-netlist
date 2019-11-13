@@ -4,7 +4,7 @@ go 1.13
 
 require (
 	github.com/apiheat/akamai-cli-common v3.1.0+incompatible
-	github.com/apiheat/go-edgegrid/v6 v6.1.8
+	github.com/apiheat/go-edgegrid/v6 v6.1.10
 	github.com/google/go-querystring v1.0.0 // indirect
 	github.com/kr/pretty v0.1.0 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
