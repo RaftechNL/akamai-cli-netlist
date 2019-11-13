@@ -24,11 +24,21 @@ func main() {
 
 		var creds *edgegrid.Credentials
 
-		// Check if were succesfull in loading credentials automatically - if not - try to load from alternative location
-		creds = edgegrid.NewCredentials().AutoLoad(c.GlobalString("section"))
-		if creds == nil {
-			creds, _ = edgegrid.NewCredentials().FromFile(c.GlobalString("config")).Section(c.GlobalString("section"))
+		if c.GlobalString("config") != common.HomeDir() {
+			var err error
+			creds, err = edgegrid.NewCredentials().FromFile(c.GlobalString("config")).Section(c.GlobalString("section"))
+
+			if err != nil {
+				return err
+			}
+		} else {
+			creds = edgegrid.NewCredentials().AutoLoad(c.GlobalString("section"))
 		}
+
+		if creds == nil {
+			return fmt.Errorf("Cannot load credentials")
+		}
+
 		config := edgegrid.NewConfig().
 			WithCredentials(creds).
 			WithLogVerbosity(c.GlobalString("debug")).
