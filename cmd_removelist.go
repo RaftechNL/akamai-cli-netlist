@@ -1,7 +1,7 @@
 package main
 
 import (
-	common "github.com/apiheat/akamai-cli-common"
+	common "github.com/apiheat/akamai-cli-common/v4"
 	"github.com/urfave/cli/v2"
 )
 

@@ -7,7 +7,7 @@ package main
 // 	"net/http/httptest"
 // 	"testing"
 
-// 	common "github.com/apiheat/akamai-cli-common"
+// 	common "github.com/apiheat/akamai-cli-common/v4"
 // 	edgegrid "github.com/apiheat/go-edgegrid"
 // 	"github.com/stretchr/testify/assert"
 // )

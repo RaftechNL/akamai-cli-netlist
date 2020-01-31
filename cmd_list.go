@@ -3,7 +3,7 @@ package main
 import (
 	"strings"
 
-	common "github.com/apiheat/akamai-cli-common"
+	common "github.com/apiheat/akamai-cli-common/v4"
 	service "github.com/apiheat/go-edgegrid/v6/service/netlistv2"
 	"github.com/urfave/cli/v2"
 )
