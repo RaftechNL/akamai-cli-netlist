@@ -103,7 +103,7 @@ func main() {
 				{
 					Name:      "by-name",
 					Usage:     "Gets a network list by name",
-					UsageText: fmt.Sprintf("%s get by-id --name NAME [command options]", appName),
+					UsageText: fmt.Sprintf("%s get by-name --name NAME [command options]", appName),
 					Flags: []cli.Flag{
 						cli.StringFlag{
 							Name:  "name",
@@ -121,6 +121,22 @@ func main() {
 							Name:  "listType",
 							Value: "IP",
 							Usage: "filters by the network list type [ IP | GEO ]",
+						},
+					},
+					Action: cmdlistNetListName,
+				},
+				{
+					Name:      "by-syncpoint",
+					Usage:     "Gets a network list by specific syncPoint",
+					UsageText: fmt.Sprintf("%s get by-syncpoint --syncPoint VALUE [command options]", appName),
+					Flags: []cli.Flag{
+						cli.IntFlag{
+							Name:  "syncpoint",
+							Usage: "Specific syncPoint of the list",
+						},
+						cli.BoolFlag{
+							Name:  "extended",
+							Usage: "returns more verbose data such as creation date and activation status",
 						},
 					},
 					Action: cmdlistNetListName,
