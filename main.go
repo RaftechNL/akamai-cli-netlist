@@ -86,8 +86,9 @@ func main() {
 					UsageText: fmt.Sprintf("%s get by-id --id UNIQUE-ID [command options]", appName),
 					Flags: []cli.Flag{
 						&cli.StringFlag{
-							Name:  "id",
-							Usage: "list unique-id",
+							Name:     "id",
+							Usage:    "list unique-id",
+							Required: true,
 						},
 						&cli.BoolFlag{
 							Name:  "extended",
@@ -106,8 +107,9 @@ func main() {
 					UsageText: fmt.Sprintf("%s get by-name --name NAME [command options]", appName),
 					Flags: []cli.Flag{
 						&cli.StringFlag{
-							Name:  "name",
-							Usage: "list name",
+							Name:     "name",
+							Usage:    "list name",
+							Required: true,
 						},
 						&cli.BoolFlag{
 							Name:  "extended",
@@ -131,8 +133,9 @@ func main() {
 					UsageText: fmt.Sprintf("%s get by-syncpoint --syncPoint VALUE [command options]", appName),
 					Flags: []cli.Flag{
 						&cli.IntFlag{
-							Name:  "syncpoint",
-							Usage: "Specific syncPoint of the list",
+							Name:     "syncpoint",
+							Usage:    "Specific syncPoint of the list",
+							Required: true,
 						},
 						&cli.BoolFlag{
 							Name:  "extended",
@@ -153,8 +156,9 @@ func main() {
 					Usage: "returns more verbose data such as creation date and activation status",
 				},
 				&cli.StringFlag{
-					Name:  "searchPattern",
-					Usage: "includes network lists that match search pattern",
+					Name:     "searchPattern",
+					Usage:    "includes network lists that match search pattern",
+					Required: true,
 				},
 				&cli.StringFlag{
 					Name:  "listType",
@@ -174,12 +178,14 @@ func main() {
 					UsageText: fmt.Sprintf("%s sync-items --id-src SOURCE-LIST-ID --id-dst TARGET-LIST-ID [command options]", appName),
 					Flags: []cli.Flag{
 						&cli.StringFlag{
-							Name:  "id-src",
-							Usage: "Source list ID to take items from",
+							Name:     "id-src",
+							Usage:    "Source list ID to take items from",
+							Required: true,
 						},
 						&cli.StringFlag{
-							Name:  "id-dst",
-							Usage: "Target list ID to which items should be added",
+							Name:     "id-dst",
+							Usage:    "Target list ID to which items should be added",
+							Required: true,
 						},
 						&cli.BoolFlag{
 							Name:  "force",
@@ -194,12 +200,14 @@ func main() {
 					UsageText: fmt.Sprintf("%s sync-items --from-file PATH-TO-FILE --id-dst TARGET-LIST-ID [command options]", appName),
 					Flags: []cli.Flag{
 						&cli.StringFlag{
-							Name:  "from-file",
-							Usage: "Source list ID to take items from",
+							Name:     "from-file",
+							Usage:    "Source list ID to take items from",
+							Required: true,
 						},
 						&cli.StringFlag{
-							Name:  "id-dst",
-							Usage: "Target list ID to which items should be added",
+							Name:     "id-dst",
+							Usage:    "Target list ID to which items should be added",
+							Required: true,
 						},
 						&cli.BoolFlag{
 							Name:  "force",
@@ -240,12 +248,14 @@ func main() {
 					UsageText: fmt.Sprintf("%s items remove --id UNIQUE-ID --element ELEMENT", appName),
 					Flags: []cli.Flag{
 						&cli.StringFlag{
-							Name:  "id",
-							Usage: "list unique-id",
+							Name:     "id",
+							Usage:    "list unique-id",
+							Required: true,
 						},
 						&cli.StringFlag{
-							Name:  "element",
-							Usage: "element to be removed",
+							Name:     "element",
+							Usage:    "element to be removed",
+							Required: true,
 						},
 					},
 					Action: cmdRemoveItemFromNetlist,
@@ -258,9 +268,10 @@ func main() {
 			UsageText: fmt.Sprintf("%s create --name NETWORK-LIST-NAME [command options]", appName),
 			Flags: []cli.Flag{
 				&cli.StringFlag{
-					Name:  "name",
-					Value: "",
-					Usage: "name for the new list",
+					Name:     "name",
+					Value:    "",
+					Usage:    "name for the new list",
+					Required: true,
 				},
 				&cli.StringFlag{
 					Name:  "description",
@@ -285,8 +296,9 @@ func main() {
 					UsageText: fmt.Sprintf("%s activate list --id UNIQUE-ID [command options]", appName),
 					Flags: []cli.Flag{
 						&cli.StringFlag{
-							Name:  "id",
-							Usage: "list unique-id",
+							Name:     "id",
+							Usage:    "list unique-id",
+							Required: true,
 						},
 						&cli.StringFlag{
 							Name:  "comments",
@@ -314,8 +326,9 @@ func main() {
 					UsageText: fmt.Sprintf("%s activate status --id UNIQUE-ID [command options]", appName),
 					Flags: []cli.Flag{
 						&cli.StringFlag{
-							Name:  "id",
-							Usage: "list unique-id",
+							Name:     "id",
+							Usage:    "list unique-id",
+							Required: true,
 						},
 						&cli.BoolFlag{
 							Name:  "prd",
@@ -332,8 +345,9 @@ func main() {
 			UsageText: fmt.Sprintf("%s delete --id UNIQUE-ID", appName),
 			Flags: []cli.Flag{
 				&cli.StringFlag{
-					Name:  "id",
-					Usage: "list unique-id to remove",
+					Name:     "id",
+					Usage:    "list unique-id to remove",
+					Required: true,
 				},
 			},
 			Action: cmdRemoveNetlist,
@@ -344,12 +358,14 @@ func main() {
 			UsageText: fmt.Sprintf("%s notification status --id UNIQUE-ID --notificationRecipients RECIPIENTS [command options]", appName),
 			Flags: []cli.Flag{
 				&cli.StringSliceFlag{
-					Name:  "networkListsIDs",
-					Usage: "recipients of notification",
+					Name:     "networkListsIDs",
+					Usage:    "recipients of notification",
+					Required: true,
 				},
 				&cli.StringSliceFlag{
-					Name:  "notificationRecipients",
-					Usage: "recipients of notification",
+					Name:     "notificationRecipients",
+					Usage:    "recipients of notification",
+					Required: true,
 				},
 				&cli.BoolFlag{
 					Name:  "unsubscribe",

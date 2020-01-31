@@ -19,9 +19,6 @@ func cmdNotificationManagement(c *cli.Context) error {
 //
 // cmd_search
 func notificationManagement(c *cli.Context) error {
-	//TODO: fix
-	// common.VerifyArgumentByName(c, "networkListsIDs")
-	// common.VerifyArgumentByName(c, "notificationRecipients")
 
 	if len(c.StringSlice("notificationRecipients")) < 1 {
 		log.Fatal("Please provide notificationRecipients!")

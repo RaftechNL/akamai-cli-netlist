@@ -14,8 +14,6 @@ func cmdActivateNetList(c *cli.Context) error {
 }
 
 func activateNetList(c *cli.Context) error {
-	//TODO: fix
-	//common.VerifyArgumentByName(c, "id")
 
 	activationEnvironment := service.Staging
 

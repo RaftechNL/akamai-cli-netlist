@@ -11,8 +11,6 @@ func cmdCreateNetList(c *cli.Context) error {
 }
 
 func createNetList(c *cli.Context) error {
-	//TODO: fix
-	// common.VerifyArgumentByName(c, "name")
 
 	newNetworkListOpst := service.NetworkListsOptionsv2{}
 	newNetworkListOpst.Description = c.String("description")
