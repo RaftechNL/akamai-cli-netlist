@@ -5,7 +5,7 @@ import (
 
 	common "github.com/apiheat/akamai-cli-common"
 	service "github.com/apiheat/go-edgegrid/v6/service/netlistv2"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 )
 
 // cmdSyncNetListID is used by cli to sync items between source and target list
@@ -20,8 +20,9 @@ func cmdsyncNetListWithFile(c *cli.Context) error {
 
 // syncNetListbyID synchronizes item from src list to destination list
 func syncNetListbyID(c *cli.Context) error {
-	common.VerifyArgumentByName(c, "id-src")
-	common.VerifyArgumentByName(c, "id-dst")
+	//TODO: fix
+	// common.VerifyArgumentByName(c, "id-src")
+	// common.VerifyArgumentByName(c, "id-dst")
 
 	synchronize(c.String("id-src"), c.String("id-dst"), false, c.Bool("force"))
 
@@ -36,8 +37,9 @@ func syncNetListbyID(c *cli.Context) error {
 
 // syncNetListWithFile synchronizes item from src list to destination list
 func syncNetListWithFile(c *cli.Context) error {
-	common.VerifyArgumentByName(c, "from-file")
-	common.VerifyArgumentByName(c, "id-dst")
+	//TODO: fix
+	// common.VerifyArgumentByName(c, "from-file")
+	// common.VerifyArgumentByName(c, "id-dst")
 
 	synchronize(c.String("from-file"), c.String("id-dst"), true, c.Bool("force"))
 

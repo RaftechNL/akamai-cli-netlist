@@ -7,7 +7,7 @@ import (
 
 	common "github.com/apiheat/akamai-cli-common"
 	service "github.com/apiheat/go-edgegrid/v6/service/netlistv2"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 )
 
 func cmdAddItemsToNetlist(c *cli.Context) error {
@@ -18,11 +18,13 @@ func addItemsToNetlist(c *cli.Context) error {
 
 	var itemsToAdd []string
 
-	common.VerifyArgumentByName(c, "id")
+	//TODO: fix
+	// common.VerifyArgumentByName(c, "id")
 
 	//We are not using from-file so we need to validate arguments
 	if c.String("from-file") == "" {
-		common.VerifyArgumentByName(c, "items")
+		//TODO: fix
+		// common.VerifyArgumentByName(c, "items")
 
 		//Add out items to slice
 		itemsToAdd = strings.Split(c.String("items"), ",")

@@ -139,7 +139,7 @@ func main() {
 							Usage: "returns more verbose data such as creation date and activation status",
 						},
 					},
-					Action: cmdlistNetListName,
+					Action: cmdlistNetListSyncPoint,
 				},
 			},
 		},

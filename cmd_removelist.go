@@ -2,7 +2,7 @@ package main
 
 import (
 	common "github.com/apiheat/akamai-cli-common"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 )
 
 func cmdRemoveNetlist(c *cli.Context) error {
@@ -10,7 +10,7 @@ func cmdRemoveNetlist(c *cli.Context) error {
 }
 
 func removeNetlist(c *cli.Context) error {
-	common.VerifyArgumentByName(c, "id")
+	// common.VerifyArgumentByName(c, "id")
 
 	netLists, err := apiClient.DeleteNetworkList(c.String("id"))
 
