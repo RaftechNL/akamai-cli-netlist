@@ -1,9 +1,9 @@
 package main
 
 import (
-	common "github.com/apiheat/akamai-cli-common"
+	common "github.com/apiheat/akamai-cli-common/v4"
 	service "github.com/apiheat/go-edgegrid/v6/service/netlistv2"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 )
 
 func cmdActivateNetListStatus(c *cli.Context) error {
@@ -11,7 +11,6 @@ func cmdActivateNetListStatus(c *cli.Context) error {
 }
 
 func activateNetListStatus(c *cli.Context) error {
-	common.VerifyArgumentByName(c, "id")
 
 	activationEnvironment := service.Staging
 

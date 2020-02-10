@@ -3,9 +3,9 @@ package main
 import (
 	"log"
 
-	common "github.com/apiheat/akamai-cli-common"
+	common "github.com/apiheat/akamai-cli-common/v4"
 	service "github.com/apiheat/go-edgegrid/v6/service/netlistv2"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 )
 
 // cmdSyncNetListID is used by cli to sync items between source and target list
@@ -20,33 +20,19 @@ func cmdsyncNetListWithFile(c *cli.Context) error {
 
 // syncNetListbyID synchronizes item from src list to destination list
 func syncNetListbyID(c *cli.Context) error {
-	common.VerifyArgumentByName(c, "id-src")
-	common.VerifyArgumentByName(c, "id-dst")
-
-	synchronize(c.String("id-src"), c.String("id-dst"), false, c.Bool("force"))
-
-	// resultErr := service.NetworkListErrorv2{}
-	// resultErr.Title = "Sync failed"
-	// resultErr.Detail = "Source list does not contain items for sync"
-
-	// return errors.New("Source list does not have ")
-
+	synchronize(c.String("id-src"), c.String("id-dst"), false, c.Bool("force"), c.Bool("dry-run"))
 	return nil
 }
 
 // syncNetListWithFile synchronizes item from src list to destination list
 func syncNetListWithFile(c *cli.Context) error {
-	common.VerifyArgumentByName(c, "from-file")
-	common.VerifyArgumentByName(c, "id-dst")
-
-	synchronize(c.String("from-file"), c.String("id-dst"), true, c.Bool("force"))
-
+	synchronize(c.String("from-file"), c.String("id-dst"), true, c.Bool("force"), c.Bool("dry-run"))
 	return nil
 }
 
 //synchronize is used to synchronize between 2 sources of IPs. If used with force option it will
 //also perform removal of addresses from the target.
-func synchronize(source, destination string, fromFile, force bool) {
+func synchronize(source, destination string, fromFile, force, dryRun bool) {
 	var ipsFromSource []string
 
 	listNetListOptsv2 := service.ListNetworkListsOptionsv2{}
@@ -81,6 +67,21 @@ func synchronize(source, destination string, fromFile, force bool) {
 	//What is present in destination list and not in source
 	diffRemove := stringsSlicesDifference(netListDst.List, ipsFromSource)
 
+	if dryRun {
+
+		diff := struct {
+			InSrc []string `json:"add,omitempty"`
+			InDst []string `json:"remmove,omitempty"`
+		}{
+			InSrc: unique(diffAdd),
+			InDst: diffRemove,
+		}
+
+		common.OutputJSON(diff)
+
+		return
+	}
+
 	//Safe check we will not remove all ips we have
 	if len(diffRemove) > 0 && !force {
 		log.Fatalf("Some IPs are present in target, but not in source. %v. Use `--force` to enable removing", diffRemove)
@@ -101,7 +102,7 @@ func synchronize(source, destination string, fromFile, force bool) {
 
 	//Add entire set from the file to the change
 	syncListOpts := service.NetworkListsOptionsv2{
-		List: ipsFromSource,
+		List: unique(ipsFromSource),
 	}
 
 	// Append items from src list to dst list

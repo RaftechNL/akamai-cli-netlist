@@ -1,9 +1,9 @@
 package main
 
 import (
-	common "github.com/apiheat/akamai-cli-common"
+	common "github.com/apiheat/akamai-cli-common/v4"
 	service "github.com/apiheat/go-edgegrid/v6/service/netlistv2"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 )
 
 // cmdSearchNetLists is used by cli to execute search across lists based on item
@@ -13,7 +13,8 @@ func cmdSearchNetLists(c *cli.Context) error {
 
 // searchNetLists execute client API call to search for lists based on item
 func searchNetLists(c *cli.Context) error {
-	common.VerifyArgumentByName(c, "searchPattern")
+	//TODO: fix
+	// common.VerifyArgumentByName(c, "searchPattern")
 
 	listNetListOptsv2 := service.ListNetworkListsOptionsv2{}
 	listNetListOptsv2.Search = c.String("searchPattern")

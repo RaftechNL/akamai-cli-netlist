@@ -3,9 +3,9 @@ package main
 import (
 	"strings"
 
-	common "github.com/apiheat/akamai-cli-common"
+	common "github.com/apiheat/akamai-cli-common/v4"
 	service "github.com/apiheat/go-edgegrid/v6/service/netlistv2"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 )
 
 // cmdlistNetLists is used by cli to execute action of listing all network lists
@@ -21,6 +21,12 @@ func cmdlistNetListID(c *cli.Context) error {
 // cmdlistNetListName is used by cli to execute action of listing specific network list
 func cmdlistNetListName(c *cli.Context) error {
 	return listNetListbyName(c)
+}
+
+// cmdlistNetListSyncPoint is used by cli to execute action of listing specific network list
+// by given SyncPoint
+func cmdlistNetListSyncPoint(c *cli.Context) error {
+	return listNetListbySyncPoint(c)
 }
 
 // listNetLists execute client API call to get all network lists
@@ -51,7 +57,8 @@ func listNetLists(c *cli.Context) error {
 
 // listNetLists execute client API call to get specific network list
 func listNetListbyID(c *cli.Context) error {
-	common.VerifyArgumentByName(c, "id")
+	//TODO: fix
+	// common.VerifyArgumentByName(c, "id")
 
 	listNetListOptsv2 := service.ListNetworkListsOptionsv2{}
 	listNetListOptsv2.IncludeElements = c.Bool("includeElements")
@@ -70,7 +77,8 @@ func listNetListbyID(c *cli.Context) error {
 // listNetLists execute client API call to get specific network list
 // it always returns only one list - for more results use search
 func listNetListbyName(c *cli.Context) error {
-	common.VerifyArgumentByName(c, "name")
+	//TODO: fix
+	// common.VerifyArgumentByName(c, "name")
 
 	listNetListOptsv2 := service.ListNetworkListsOptionsv2{}
 	listNetListOptsv2.IncludeElements = c.Bool("includeElements")
@@ -90,6 +98,20 @@ func listNetListbyName(c *cli.Context) error {
 			return nil
 		}
 	}
+
+	return nil
+}
+
+// listNetListbySyncPoint execute client API call to get specific network list
+// it always returns only one list - for more results use search
+func listNetListbySyncPoint(c *cli.Context) error {
+
+	netList, netlistErr := apiClient.GetActivationSnapshot(c.String("id"), c.Int("syncpoint"), true)
+	if netlistErr != nil {
+		return netlistErr
+	}
+
+	common.OutputJSON(netList)
 
 	return nil
 }

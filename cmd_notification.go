@@ -4,9 +4,8 @@ import (
 	"log"
 	"strings"
 
-	common "github.com/apiheat/akamai-cli-common"
 	service "github.com/apiheat/go-edgegrid/v6/service/netlistv2"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 )
 
 // cmdNotificationManagement is used by cli to execute notification management
@@ -20,8 +19,6 @@ func cmdNotificationManagement(c *cli.Context) error {
 //
 // cmd_search
 func notificationManagement(c *cli.Context) error {
-	common.VerifyArgumentByName(c, "networkListsIDs")
-	common.VerifyArgumentByName(c, "notificationRecipients")
 
 	if len(c.StringSlice("notificationRecipients")) < 1 {
 		log.Fatal("Please provide notificationRecipients!")

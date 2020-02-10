@@ -1,8 +1,8 @@
 package main
 
 import (
-	common "github.com/apiheat/akamai-cli-common"
-	"github.com/urfave/cli"
+	common "github.com/apiheat/akamai-cli-common/v4"
+	"github.com/urfave/cli/v2"
 )
 
 func cmdRemoveItemFromNetlist(c *cli.Context) error {
@@ -10,8 +10,9 @@ func cmdRemoveItemFromNetlist(c *cli.Context) error {
 }
 
 func removeItemFromNetlist(c *cli.Context) error {
-	common.VerifyArgumentByName(c, "id")
-	common.VerifyArgumentByName(c, "element")
+	//TODO: fix
+	// common.VerifyArgumentByName(c, "id")
+	// common.VerifyArgumentByName(c, "element")
 
 	netLists, err := apiClient.RemoveNetworkListElement(c.String("id"), c.String("element"))
 
