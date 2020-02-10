@@ -73,7 +73,7 @@ func synchronize(source, destination string, fromFile, force, dryRun bool) {
 			InSrc []string `json:"add,omitempty"`
 			InDst []string `json:"remmove,omitempty"`
 		}{
-			InSrc: diffAdd,
+			InSrc: unique(diffAdd),
 			InDst: diffRemove,
 		}
 
@@ -102,7 +102,7 @@ func synchronize(source, destination string, fromFile, force, dryRun bool) {
 
 	//Add entire set from the file to the change
 	syncListOpts := service.NetworkListsOptionsv2{
-		List: ipsFromSource,
+		List: unique(ipsFromSource),
 	}
 
 	// Append items from src list to dst list
