@@ -132,7 +132,25 @@ You can search through network list based on name or elements which list include
    ```
 ### Synchronize list
 This new functionality ( introduced from v6 ) allows you to synchronize destination list from either local file or from another network list.
-In all cases if during the sync process will recognize addresses would need to be *removed* from the target list you need to use `--force` switch to indicate that you allow for that action.
+
+To be sure that no mistakes are made sync supports `--dry-run` option which will only display changes which would be applied. 
+
+```
+bash-5.0# akamai netlist sync --dry-run aka --id-src 1231_UNIQID1  --id-dst 1234_UNIQID
+{
+    "remmove": [
+        "1.2.3.4"
+    ],
+    "add": [
+        "5.6.6.8"
+    ]
+}
+```
+
+> Before applying changes duplicates are automatically removed
+
+>In all cases if  the sync process will recognize addresses that would need to be *removed* from the target list you need to use `--force` switch to indicate that you allow for that action.
+
 * Synchronize from file
    ```
    akamai netlist sync local --from-file /path/to/file --id-dst 1234_UNIQID
