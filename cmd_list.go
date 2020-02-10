@@ -105,27 +105,13 @@ func listNetListbyName(c *cli.Context) error {
 // listNetListbySyncPoint execute client API call to get specific network list
 // it always returns only one list - for more results use search
 func listNetListbySyncPoint(c *cli.Context) error {
-	//TODO: fix
-	// common.VerifyArgumentByName(c, "name")
 
-	listNetListOptsv2 := service.ListNetworkListsOptionsv2{}
-	listNetListOptsv2.IncludeElements = c.Bool("includeElements")
-	listNetListOptsv2.Extended = c.Bool("extended")
-	listNetListOptsv2.Search = c.String("name")
-	listNetListOptsv2.TypeOflist = c.String("listType")
-
-	netList, netlistErr := apiClient.ListNetworkLists(listNetListOptsv2)
+	netList, netlistErr := apiClient.GetActivationSnapshot(c.String("id"), c.Int("syncpoint"), true)
 	if netlistErr != nil {
 		return netlistErr
 	}
 
-	// First match wins
-	for _, foundNetList := range netList.NetworkLists {
-		if strings.ToLower(foundNetList.Name) == strings.ToLower(c.String("name")) {
-			common.OutputJSON(foundNetList)
-			return nil
-		}
-	}
+	common.OutputJSON(netList)
 
 	return nil
 }

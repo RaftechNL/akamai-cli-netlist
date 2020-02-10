@@ -130,8 +130,13 @@ func main() {
 				&cli.Command{
 					Name:      "by-syncpoint",
 					Usage:     "Gets a network list by specific syncPoint",
-					UsageText: fmt.Sprintf("%s get by-syncpoint --syncPoint VALUE [command options]", appName),
+					UsageText: fmt.Sprintf("%s get by-syncpoint --id UNIQUE-ID --syncPoint VALUE [command options]", appName),
 					Flags: []cli.Flag{
+						&cli.StringFlag{
+							Name:     "id",
+							Usage:    "list unique-id",
+							Required: true,
+						},
 						&cli.IntFlag{
 							Name:     "syncpoint",
 							Usage:    "Specific syncPoint of the list",
@@ -171,6 +176,13 @@ func main() {
 		&cli.Command{
 			Name:  "sync",
 			Usage: "Synchronizes items from source list into destination list ( without activation )",
+			Flags: []cli.Flag{
+				&cli.BoolFlag{
+					Name:  "dry-run",
+					Usage: "Shows action to be performed",
+					Value: false,
+				},
+			},
 			Subcommands: []*cli.Command{
 				&cli.Command{
 					Name:      "aka", //TODO: Name of this command might be changed *** BETA ***

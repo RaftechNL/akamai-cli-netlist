@@ -20,35 +20,19 @@ func cmdsyncNetListWithFile(c *cli.Context) error {
 
 // syncNetListbyID synchronizes item from src list to destination list
 func syncNetListbyID(c *cli.Context) error {
-	//TODO: fix
-	// common.VerifyArgumentByName(c, "id-src")
-	// common.VerifyArgumentByName(c, "id-dst")
-
-	synchronize(c.String("id-src"), c.String("id-dst"), false, c.Bool("force"))
-
-	// resultErr := service.NetworkListErrorv2{}
-	// resultErr.Title = "Sync failed"
-	// resultErr.Detail = "Source list does not contain items for sync"
-
-	// return errors.New("Source list does not have ")
-
+	synchronize(c.String("id-src"), c.String("id-dst"), false, c.Bool("force"), c.Bool("dry-run"))
 	return nil
 }
 
 // syncNetListWithFile synchronizes item from src list to destination list
 func syncNetListWithFile(c *cli.Context) error {
-	//TODO: fix
-	// common.VerifyArgumentByName(c, "from-file")
-	// common.VerifyArgumentByName(c, "id-dst")
-
-	synchronize(c.String("from-file"), c.String("id-dst"), true, c.Bool("force"))
-
+	synchronize(c.String("from-file"), c.String("id-dst"), true, c.Bool("force"), c.Bool("dry-run"))
 	return nil
 }
 
 //synchronize is used to synchronize between 2 sources of IPs. If used with force option it will
 //also perform removal of addresses from the target.
-func synchronize(source, destination string, fromFile, force bool) {
+func synchronize(source, destination string, fromFile, force, dryRun bool) {
 	var ipsFromSource []string
 
 	listNetListOptsv2 := service.ListNetworkListsOptionsv2{}
@@ -82,6 +66,21 @@ func synchronize(source, destination string, fromFile, force bool) {
 
 	//What is present in destination list and not in source
 	diffRemove := stringsSlicesDifference(netListDst.List, ipsFromSource)
+
+	if dryRun {
+
+		diff := struct {
+			InSrc []string `json:"add,omitempty"`
+			InDst []string `json:"remmove,omitempty"`
+		}{
+			InSrc: diffAdd,
+			InDst: diffRemove,
+		}
+
+		common.OutputJSON(diff)
+
+		return
+	}
 
 	//Safe check we will not remove all ips we have
 	if len(diffRemove) > 0 && !force {

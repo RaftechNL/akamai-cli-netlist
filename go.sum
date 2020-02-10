@@ -1,6 +1,10 @@
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
+github.com/apiheat/akamai-cli-common/v4 v4.0.3 h1:hYjHzMfvqNvmc0qybVikzlfNRFRsWiHj+TuUEfISZ8I=
+github.com/apiheat/akamai-cli-common/v4 v4.0.3/go.mod h1:aVU84oNCnf8Vk3oWOp38RrbV2HMTn5lwGimgjzcfDCQ=
 github.com/apiheat/go-edgegrid v6.0.1+incompatible h1:JvwqSU89onb4/EcH32DFrp4dNu8Ei/KNaiOmEY45EDk=
 github.com/apiheat/go-edgegrid v6.0.1+incompatible/go.mod h1:+gACyrB9+3TRIxCzdihSiCzrLSdhWvJAXq74KMfPzMs=
+github.com/apiheat/go-edgegrid/v6 v6.1.11 h1:7LagJ3l5sUiNoPH9sBAG95wCAoFg4BndfvpxFC+QYNk=
+github.com/apiheat/go-edgegrid/v6 v6.1.11/go.mod h1:At9IQFFbIBGaRkyqQ08gvaHB7+HEvO/GgtICYuLUZkU=
 github.com/asaskevich/govalidator v0.0.0-20180315120708-ccb8e960c48f h1:y2hSFdXeA1y5z5f0vfNO0Dg5qVY036qzlz3Pds0B92o=
 github.com/asaskevich/govalidator v0.0.0-20180315120708-ccb8e960c48f/go.mod h1:lB+ZfQJz7igIIfQNfa7Ml4HSf2uFQQRzpGGRXenZAgY=
 github.com/cpuguy83/go-md2man/v2 v2.0.0-20190314233015-f79a8a8ca69d h1:U+s90UTSYgptZMwQh2aRr3LuazLJIa+Pg3Kc1ylSYVY=
